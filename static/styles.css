@@ -1,0 +1,2957 @@
+/* =========================================================
+   CYBER AGGRESSION DETECTION SYSTEM
+   DARK INDIGO / BLUE-PURPLE RESPONSIVE THEME
+========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+
+/* =========================================================
+   COLOR SYSTEM
+========================================================= */
+
+:root {
+    --bg: #0d0b1a;
+    --bg-deep: #090812;
+
+    --surface: #17142a;
+    --surface-light: #1d1933;
+    --surface-hover: #282143;
+
+    --surface-soft: #211d38;
+    --surface-dark: #121020;
+
+    --primary: #8170d6;
+    --primary-light: #9a8be6;
+    --primary-dark: #6254ad;
+
+    --border: #312b50;
+    --border-light: #4a4073;
+
+    --white: #f6f4ff;
+    --text: #e7e4f3;
+    --muted: #aaa4c1;
+    --dark-muted: #756f91;
+
+    --shadow:
+        0 24px 60px rgba(0, 0, 0, 0.42);
+
+    --soft-shadow:
+        0 12px 30px rgba(7, 5, 20, 0.28);
+
+    --radius: 16px;
+    --small-radius: 10px;
+
+    --transition: all 0.25s ease;
+}
+
+
+/* =========================================================
+   GLOBAL RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: "DM Sans", Arial, sans-serif;
+    color: var(--text);
+
+    /*
+       CSS ONLY BACKGROUND
+       NO IMAGE IS USED
+    */
+    background:
+        radial-gradient(circle at top left,
+            rgba(90, 72, 160, 0.18),
+            transparent 34%),
+        radial-gradient(circle at bottom right,
+            rgba(65, 55, 125, 0.15),
+            transparent 38%),
+        linear-gradient(135deg,
+            #0b0916 0%,
+            #100d22 45%,
+            #0c0a18 100%);
+
+    background-attachment: fixed;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   TYPOGRAPHY
+========================================================= */
+
+h1,
+h2,
+h3 {
+    margin-top: 0;
+
+    font-family: "Space Grotesk", Arial, sans-serif;
+
+    color: var(--white);
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    letter-spacing: -0.5px;
+}
+
+h3 {
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+}
+
+p {
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+button {
+    appearance: none;
+
+    border: 1px solid var(--primary);
+
+    background: var(--primary);
+    color: #ffffff;
+
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+button:hover {
+    background: var(--primary-light);
+
+    border-color: var(--primary-light);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(112, 93, 201, 0.25);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+button:disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   FORM INPUTS
+========================================================= */
+
+input {
+    width: 100%;
+
+    padding: 13px 15px;
+
+    color: var(--white);
+
+    background: rgba(12, 10, 25, 0.82);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    outline: none;
+
+    font-family: inherit;
+    font-size: 0.95rem;
+
+    transition: var(--transition);
+}
+
+input::placeholder {
+    color: var(--dark-muted);
+}
+
+input:hover {
+    border-color: var(--border-light);
+}
+
+input:focus {
+    border-color: var(--primary);
+
+    box-shadow:
+        0 0 0 3px rgba(129, 112, 214, 0.16);
+}
+
+
+/* =========================================================
+   LINKS
+========================================================= */
+
+a {
+    color: var(--primary-light);
+
+    text-decoration: none;
+
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--white);
+}
+
+
+/* =========================================================
+   AUTHENTICATION PAGES
+========================================================= */
+
+.center-page {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 25px;
+
+    min-height: 100vh;
+}
+
+.form-container {
+    width: 100%;
+    max-width: 430px;
+
+    padding: 42px;
+
+    text-align: center;
+
+    background:
+        linear-gradient(145deg,
+            rgba(30, 26, 53, 0.96),
+            rgba(20, 17, 37, 0.96));
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(12px);
+
+    animation: fadeUp 0.45s ease;
+}
+
+.form-container h1,
+.form-container h2 {
+    margin-bottom: 8px;
+}
+
+.form-container form {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    margin-top: 28px;
+}
+
+.form-container button {
+    width: 100%;
+
+    margin-top: 5px;
+
+    padding: 13px;
+}
+
+.form-container p {
+    margin: 22px 0 6px;
+
+    font-size: 0.92rem;
+}
+
+.form-container>a,
+.admin-link {
+    display: inline-block;
+
+    color: var(--primary-light);
+
+    font-weight: 600;
+
+    border-bottom:
+        1px solid rgba(154, 139, 230, 0.45);
+
+    padding-bottom: 2px;
+}
+
+.form-container>a:hover,
+.admin-link:hover {
+    color: var(--white);
+
+    border-color: var(--primary-light);
+}
+
+
+/* =========================================================
+   USERS DASHBOARD
+========================================================= */
+
+.users-page {
+    padding: 40px 20px;
+
+    min-height: 100vh;
+}
+
+.container {
+    width: min(100%, 850px);
+
+    margin: 0 auto;
+
+    background:
+        linear-gradient(145deg,
+            rgba(27, 23, 48, 0.97),
+            rgba(18, 15, 34, 0.97));
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    padding: 32px;
+
+    box-shadow: var(--shadow);
+
+    backdrop-filter: blur(12px);
+
+    animation: fadeUp 0.45s ease;
+}
+
+.container>h2 {
+    text-align: center;
+
+    margin-bottom: 32px;
+}
+
+.section {
+    padding-bottom: 24px;
+
+    margin-bottom: 24px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.section:last-child {
+    border-bottom: none;
+
+    margin-bottom: 0;
+
+    padding-bottom: 0;
+}
+
+.section h3 {
+    display: flex;
+
+    align-items: center;
+
+    margin-bottom: 14px;
+
+    padding-bottom: 9px;
+
+    border-bottom:
+        1px solid var(--border);
+
+    color: var(--white);
+}
+
+
+/* =========================================================
+   USER ROWS
+========================================================= */
+
+.user {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+
+    min-height: 58px;
+
+    padding: 10px 12px;
+
+    margin: 9px 0;
+
+    background: var(--surface-light);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--small-radius);
+
+    transition: var(--transition);
+}
+
+.user:hover {
+    background: var(--surface-hover);
+
+    border-color: var(--border-light);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.user span {
+    color: var(--white);
+
+    font-weight: 500;
+
+    word-break: break-word;
+}
+
+.user div {
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.user button {
+    padding: 8px 12px;
+
+    font-size: 0.82rem;
+}
+
+
+/* =========================================================
+   BUTTON VARIANTS
+========================================================= */
+
+button.accept,
+button.chat {
+    background: var(--primary);
+
+    color: #ffffff;
+
+    border-color: var(--primary);
+}
+
+button.accept:hover,
+button.chat:hover {
+    background: var(--primary-light);
+}
+
+button.reject {
+    background: transparent;
+
+    color: var(--text);
+
+    border-color: var(--border-light);
+}
+
+button.reject:hover {
+    background: var(--surface-hover);
+
+    border-color: var(--primary-light);
+}
+
+
+/* =========================================================
+   WARNING DIALOG
+========================================================= */
+
+#warningDialog {
+    display: none;
+
+    position: fixed !important;
+
+    z-index: 1000;
+
+    inset: 0;
+
+    background:
+        rgba(7, 5, 18, 0.78) !important;
+
+    padding: 20px;
+
+    backdrop-filter: blur(6px);
+}
+
+.dialog-content {
+    width: min(100%, 390px);
+
+    margin: 18vh auto !important;
+
+    padding: 30px !important;
+
+    text-align: center;
+
+    background:
+        linear-gradient(145deg,
+            var(--surface-light),
+            var(--surface-dark)) !important;
+
+    color: var(--text);
+
+    border: 1px solid var(--border-light);
+
+    border-radius: var(--radius) !important;
+
+    box-shadow: var(--shadow);
+}
+
+.dialog-content h3 {
+    font-size: 1.25rem;
+}
+
+.dialog-content p {
+    margin-bottom: 22px;
+}
+
+.dialog-content button {
+    margin: 4px;
+}
+
+
+/* =========================================================
+   CHAT PAGE
+========================================================= */
+
+.chat-page {
+    min-height: 100vh;
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 25px;
+
+    box-sizing: border-box;
+}
+
+
+/*
+   CENTERED CHAT AREA
+*/
+
+.chat-wrapper {
+    width: min(100%, 850px);
+
+    height: min(85vh, 720px);
+
+    margin: auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(145deg,
+            rgba(24, 20, 43, 0.98),
+            rgba(14, 12, 27, 0.98));
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+
+/* Keeping compatibility if chat-container exists */
+
+.chat-container {
+    width: min(90%, 850px);
+
+    max-width: 850px;
+
+    height: 720px;
+
+    margin: auto;
+
+    background:
+        linear-gradient(145deg,
+            var(--surface-light),
+            var(--surface-dark));
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-shadow: var(--soft-shadow);
+
+    overflow: hidden;
+}
+
+
+.chat-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 18px 22px;
+
+    background:
+        rgba(27, 23, 48, 0.98);
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+#chatUser {
+    color: var(--white);
+
+    font-family: "Space Grotesk", sans-serif;
+
+    font-size: 1.1rem;
+
+    font-weight: 600;
+}
+
+.chat-header a {
+    padding: 8px 14px;
+
+    border: 1px solid var(--border-light);
+
+    border-radius: 8px;
+
+    color: var(--primary-light);
+
+    font-size: 0.85rem;
+}
+
+.chat-header a:hover {
+    background: var(--surface-hover);
+
+    color: var(--white);
+
+    border-color: var(--primary);
+}
+
+
+.chat-box {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 22px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+
+    background:
+        linear-gradient(180deg,
+            #0f0d1d 0%,
+            #0c0b18 100%);
+}
+
+.chat-box::-webkit-scrollbar {
+    width: 7px;
+}
+
+.chat-box::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+
+    border-radius: 10px;
+}
+
+.chat-box::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+
+/* =========================================================
+   CHAT MESSAGES
+========================================================= */
+
+.message,
+.blocked-message {
+    width: fit-content;
+
+    max-width: 75%;
+
+    padding: 10px 14px;
+
+    border-radius: 12px;
+
+    font-size: 0.94rem;
+
+    line-height: 1.45;
+
+    word-break: break-word;
+
+    animation: messageIn 0.2s ease;
+}
+
+.message.sent {
+    align-self: flex-end;
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(135deg,
+            #7463c9,
+            #5d4fa6);
+
+    border-bottom-right-radius: 3px;
+
+    box-shadow:
+        0 5px 15px rgba(91, 74, 166, 0.2);
+}
+
+.message.received {
+    align-self: flex-start;
+
+    color: var(--white);
+
+    background: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    border-bottom-left-radius: 3px;
+}
+
+.blocked-message {
+    align-self: center;
+
+    color: var(--muted);
+
+    background: rgba(33, 29, 56, 0.8);
+
+    border:
+        1px dashed var(--border-light);
+
+    font-size: 0.85rem;
+}
+
+
+/* =========================================================
+   CHAT INPUT
+========================================================= */
+
+.input-area {
+    display: flex;
+
+    gap: 10px;
+
+    padding: 16px;
+
+    background:
+        rgba(24, 20, 43, 0.98);
+
+    border-top:
+        1px solid var(--border);
+}
+
+.input-area input {
+    flex: 1;
+}
+
+.input-area button {
+    min-width: 100px;
+}
+
+
+/* =========================================================
+   CHAT NOTIFICATIONS
+========================================================= */
+
+#notificationBox {
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    z-index: 2000;
+
+    width:
+        min(360px, calc(100vw - 40px));
+}
+
+.notification {
+    margin-bottom: 10px;
+
+    padding: 14px 16px;
+
+    background: var(--surface-light);
+
+    color: var(--white);
+
+    border: 1px solid var(--border-light);
+
+    border-left:
+        3px solid var(--primary-light);
+
+    border-radius: 10px;
+
+    box-shadow: var(--soft-shadow);
+
+    animation: notificationIn 0.3s ease;
+}
+
+.notification.warning {
+    border-left-color: var(--primary);
+}
+
+.notification.alert {
+    border-left-color: var(--primary-dark);
+}
+
+
+/* =========================================================
+   ADMIN DASHBOARD
+========================================================= */
+
+.admin-page {
+    min-height: 100vh;
+
+    padding: 40px 20px;
+}
+
+.admin-container,
+.admin-page .admin-container {
+    width: min(100%, 900px);
+
+    margin: 0 auto;
+
+    padding: 35px;
+
+    background:
+        linear-gradient(145deg,
+            rgba(27, 23, 48, 0.98),
+            rgba(17, 14, 32, 0.98));
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    box-shadow: var(--shadow);
+
+    overflow: hidden;
+
+    animation: fadeUp 0.45s ease;
+}
+
+
+/* =========================================================
+   ADMIN HEADER
+========================================================= */
+
+.admin-header,
+.admin-page .admin-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding-bottom: 24px;
+
+    margin-bottom: 28px;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+
+/* Main Heading */
+
+.admin-header h2,
+.admin-page .admin-header h2 {
+    display: block !important;
+
+    margin: 0 !important;
+
+    color: var(--white) !important;
+
+    font-size: 2rem !important;
+
+    font-weight: 800 !important;
+
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   ADMIN LOGOUT
+========================================================= */
+
+.logout-btn,
+.admin-page .logout-btn {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 11px 20px;
+
+    background: var(--primary);
+
+    color: #ffffff !important;
+
+    text-decoration: none;
+
+    border: 1px solid var(--primary);
+
+    border-radius: 8px;
+
+    font-size: 0.95rem;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    transition: var(--transition);
+}
+
+.logout-btn:hover,
+.admin-page .logout-btn:hover {
+    background: var(--primary-light);
+
+    color: #ffffff !important;
+
+    border-color: var(--primary-light);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(112, 93, 201, 0.25);
+}
+
+
+/* =========================================================
+   ADMIN SECTIONS
+========================================================= */
+
+.admin-section,
+.admin-page .admin-section {
+    display: block !important;
+
+    margin-top: 32px;
+}
+
+.admin-section:first-of-type,
+.admin-page .admin-section:first-of-type {
+    margin-top: 0;
+}
+
+.admin-section h3,
+.admin-page .admin-section h3 {
+    display: block !important;
+
+    margin: 0 0 16px 0 !important;
+
+    color: var(--white) !important;
+
+    font-size: 1.4rem !important;
+
+    font-weight: 750 !important;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   ADMIN TABLES
+========================================================= */
+
+.table-wrapper,
+.admin-page .table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+
+    background: var(--surface-dark);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+}
+
+table,
+.admin-page table {
+    width: 100%;
+
+    min-width: 500px;
+
+    border-collapse: collapse;
+
+    background: var(--surface-dark);
+}
+
+th,
+td {
+    padding: 14px 16px;
+
+    text-align: left;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+.admin-page th {
+    padding: 16px 18px;
+
+    background: var(--surface-light) !important;
+
+    color: var(--white) !important;
+
+    text-align: left;
+
+    font-size: 1rem !important;
+
+    font-weight: 800 !important;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+
+    border-bottom:
+        1px solid var(--border-light);
+}
+
+.admin-page td {
+    padding: 15px 18px;
+
+    color: var(--text) !important;
+
+    background: var(--surface-dark);
+
+    text-align: left;
+
+    font-size: 0.95rem;
+
+    font-weight: 500;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr {
+    transition: var(--transition);
+}
+
+.admin-page tbody tr:hover td,
+tbody tr:hover {
+    background: var(--surface-hover);
+}
+
+.highlight,
+.admin-page .highlight {
+    color: var(--primary-light) !important;
+
+    font-weight: 800 !important;
+}
+
+
+/* =========================================================
+   USER PAGE SECTION NAVIGATION
+========================================================= */
+
+.users-page .users-container {
+    width: min(100%, 850px);
+}
+
+.users-page .section-nav {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 12px;
+
+    margin: 28px auto 32px;
+}
+
+.users-page .section-btn {
+    min-width: 140px;
+
+    padding: 12px 20px;
+
+    background: var(--surface-light);
+
+    color: var(--text);
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    font-size: 0.95rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+.users-page .section-btn:hover {
+    background: var(--surface-hover);
+
+    color: var(--white);
+
+    border-color: var(--primary);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.22);
+}
+
+.users-page .section-btn.active {
+    background: var(--primary);
+
+    color: #ffffff;
+
+    border-color: var(--primary);
+}
+
+
+/* =========================================================
+   SECTION PANELS
+========================================================= */
+
+.users-page .section-panel {
+    display: none;
+
+    width: 100%;
+
+    padding: 24px;
+
+    margin: 0;
+
+    background:
+        linear-gradient(145deg,
+            var(--surface-light),
+            var(--surface-dark));
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    animation: sectionFade 0.25s ease;
+}
+
+.users-page .section-panel.active {
+    display: block;
+}
+
+.users-page .section-panel h3 {
+    margin: 0 0 18px;
+
+    padding-bottom: 14px;
+
+    color: var(--white);
+
+    font-size: 1.3rem;
+
+    font-weight: 750;
+
+    border-bottom:
+        1px solid var(--border);
+}
+
+
+/* =========================================================
+   USER CARDS INSIDE PANELS
+========================================================= */
+
+.users-page .section-panel .user {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+
+    width: 100%;
+
+    margin: 10px 0;
+
+    padding: 14px 16px;
+
+    background: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    transition: var(--transition);
+}
+
+.users-page .section-panel .user:hover {
+    background: var(--surface-hover);
+
+    border-color: var(--border-light);
+
+    transform: translateY(-2px);
+}
+
+.users-page .section-panel .user span {
+    color: var(--white);
+
+    font-size: 1rem;
+
+    font-weight: 650;
+
+    overflow-wrap: anywhere;
+}
+
+.users-page .section-panel .user button {
+    flex-shrink: 0;
+
+    padding: 10px 18px;
+
+    margin: 0;
+
+    background: var(--primary);
+
+    color: #ffffff;
+
+    border: 1px solid var(--primary);
+
+    border-radius: 8px;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+.users-page .section-panel .user button:hover:not(:disabled) {
+    background: var(--primary-light);
+
+    border-color: var(--primary-light);
+
+    transform: translateY(-1px);
+}
+
+.users-page .section-panel .user button.chat {
+    background: var(--primary);
+
+    color: #ffffff;
+}
+
+.users-page .request-actions {
+    display: flex;
+
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.users-page .section-panel .user button.reject {
+    background: transparent;
+
+    color: var(--text);
+
+    border-color: var(--border-light);
+}
+
+.users-page .section-panel .user button.reject:hover:not(:disabled) {
+    background: var(--surface-hover);
+
+    border-color: var(--primary);
+}
+
+.users-page .section-panel .user button.accept {
+    background: var(--primary);
+
+    color: #ffffff;
+}
+
+.users-page .section-panel .user button:disabled {
+    opacity: 0.65;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+/* =========================================================
+   EMPTY MESSAGES
+========================================================= */
+
+.users-page .empty-message {
+    margin: 0;
+
+    padding: 22px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+
+    border:
+        1px dashed var(--border-light);
+
+    border-radius: 9px;
+}
+
+
+/* =========================================================
+   LOGOUT BUTTON - USERS PAGE
+========================================================= */
+
+.logout-container {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    margin-top: 30px;
+
+    padding-top: 10px;
+}
+
+.logout-container .logout-btn {
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+
+    min-width: 140px;
+
+    padding: 12px 28px;
+
+    background: var(--primary);
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    border: 1px solid var(--primary);
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: var(--transition);
+}
+
+.logout-container .logout-btn:hover {
+    background: var(--primary-light);
+
+    border-color: var(--primary-light);
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px rgba(112, 93, 201, 0.25);
+}
+
+
+/* =========================================================
+   ERROR MESSAGES
+========================================================= */
+
+.error-message {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin-bottom: 18px;
+
+    padding: 12px 15px;
+
+    background:
+        rgba(129, 112, 214, 0.12);
+
+    border: 1px solid var(--border-light);
+
+    border-left:
+        4px solid var(--primary-light);
+
+    border-radius: 8px;
+
+    color: var(--white);
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   ABUSIVE USER BADGE
+========================================================= */
+
+.request-user-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+}
+
+.username {
+    font-weight: 600;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.abusive-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 10px;
+
+    border:
+        1px solid var(--primary-dark);
+
+    border-radius: 20px;
+
+    background:
+        rgba(98, 84, 173, 0.22);
+
+    color: var(--primary-light);
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    letter-spacing: 0.3px;
+
+    transition: var(--transition);
+}
+
+.abusive-badge:hover {
+    background:
+        rgba(129, 112, 214, 0.3);
+
+    border-color: var(--primary-light);
+
+    transform: translateY(-1px);
+}
+
+.request-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes fadeUp {
+
+    from {
+        opacity: 0;
+
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes messageIn {
+
+    from {
+        opacity: 0;
+
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+
+@keyframes notificationIn {
+
+    from {
+        opacity: 0;
+
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateX(0);
+    }
+}
+
+
+@keyframes sectionFade {
+
+    from {
+        opacity: 0;
+
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   TABLET RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 768px) {
+
+    body {
+        background-attachment: scroll;
+    }
+
+    .container,
+    .admin-container,
+    .admin-page .admin-container {
+        padding: 22px;
+    }
+
+    .form-container {
+        padding: 32px 25px;
+    }
+
+    .chat-wrapper {
+        width: 100%;
+
+        height: 88vh;
+    }
+
+    .user {
+        align-items: flex-start;
+    }
+
+    .admin-header,
+    .admin-page .admin-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .admin-page .logout-btn {
+        width: 100%;
+    }
+
+    .admin-page .admin-header h2 {
+        font-size: 1.7rem !important;
+    }
+
+    .admin-page .admin-section h3 {
+        font-size: 1.25rem !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .users-page .section-nav {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        width: 100%;
+
+        gap: 10px;
+    }
+
+    .users-page .section-btn {
+        width: 100%;
+
+        min-width: 0;
+
+        padding: 11px 10px;
+
+        font-size: 0.85rem;
+    }
+
+    .users-page .section-panel {
+        padding: 18px;
+    }
+
+    .users-page .section-panel .user {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .users-page .section-panel .user button {
+        width: 100%;
+    }
+
+    .users-page .request-actions {
+        width: 100%;
+
+        display: flex;
+    }
+
+    .users-page .request-actions button {
+        flex: 1;
+    }
+
+    .request-user-info {
+        gap: 8px;
+
+        flex-wrap: wrap;
+    }
+
+    .abusive-badge {
+        font-size: 10px;
+
+        padding: 4px 8px;
+    }
+
+    .request-actions {
+        gap: 6px;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .center-page,
+    .users-page,
+    .admin-page,
+    .chat-page {
+        padding: 14px;
+    }
+
+    .form-container {
+        padding: 28px 20px;
+    }
+
+    .container,
+    .admin-container,
+    .admin-page .admin-container {
+        padding: 18px;
+
+        border-radius: 13px;
+    }
+
+    .user {
+        flex-direction: column;
+    }
+
+    .user div,
+    .user button {
+        width: 100%;
+    }
+
+    .user button {
+        min-height: 40px;
+    }
+
+    .input-area {
+        padding: 12px;
+    }
+
+    .input-area button {
+        min-width: 75px;
+
+        padding: 10px;
+    }
+
+    .chat-header {
+        padding: 14px;
+    }
+
+    .chat-box {
+        padding: 14px;
+    }
+
+    .message,
+    .blocked-message {
+        max-width: 88%;
+    }
+
+    #chatUser {
+        font-size: 0.95rem;
+    }
+
+    .chat-header a {
+        padding: 7px 10px;
+    }
+
+    .admin-page .admin-header h2 {
+        font-size: 1.5rem !important;
+    }
+
+    .admin-page .admin-section h3 {
+        font-size: 1.15rem !important;
+    }
+
+    .admin-page th {
+        font-size: 0.9rem !important;
+    }
+}
+
+
+@media (max-width: 380px) {
+
+    .users-page .section-nav {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================================================
+   PREMIUM NEON AURORA THEME OVERRIDE
+   COLOR + VISUAL ANIMATION ONLY
+   Layout, dimensions, positions and functionality preserved
+========================================================= */
+
+:root {
+    --bg: #050816;
+    --bg-deep: #02030b;
+
+    --surface: #0c1224;
+    --surface-light: #121a31;
+    --surface-hover: #192342;
+
+    --surface-soft: #111a33;
+    --surface-dark: #080d1d;
+
+    --primary: #6d5dfc;
+    --primary-light: #9b8cff;
+    --primary-dark: #4338ca;
+
+    --border: rgba(123, 135, 255, 0.20);
+    --border-light: rgba(150, 163, 255, 0.42);
+
+    --white: #f7f9ff;
+    --text: #d9e1ff;
+    --muted: #98a4c7;
+    --dark-muted: #667294;
+
+    --shadow:
+        0 24px 70px rgba(0, 0, 0, 0.48),
+        0 0 50px rgba(89, 79, 255, 0.08);
+
+    --soft-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.30),
+        0 0 28px rgba(57, 189, 248, 0.06);
+
+    --radius: 16px;
+    --small-radius: 10px;
+
+    --transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.25s ease,
+        opacity 0.25s ease;
+}
+
+/* Animated CSS-only aurora background */
+body {
+    position: relative;
+    overflow-x: hidden;
+    background:
+        radial-gradient(circle at 12% 18%, rgba(88, 71, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 86% 14%, rgba(0, 196, 255, 0.13), transparent 25%),
+        radial-gradient(circle at 76% 84%, rgba(155, 92, 255, 0.14), transparent 30%),
+        radial-gradient(circle at 20% 88%, rgba(45, 127, 255, 0.10), transparent 28%),
+        linear-gradient(135deg, #030611 0%, #070b1c 42%, #0a0d22 100%);
+    background-size: 130% 130%;
+    animation: auroraShift 18s ease-in-out infinite alternate;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: 50%;
+    filter: blur(42px);
+    opacity: 0.34;
+}
+
+body::before {
+    width: 34vw;
+    height: 34vw;
+    min-width: 260px;
+    min-height: 260px;
+    top: -12vw;
+    left: -8vw;
+    background: radial-gradient(circle, rgba(100, 83, 255, 0.30), transparent 68%);
+    animation: orbFloatOne 15s ease-in-out infinite alternate;
+}
+
+body::after {
+    width: 38vw;
+    height: 38vw;
+    min-width: 300px;
+    min-height: 300px;
+    right: -12vw;
+    bottom: -15vw;
+    background: radial-gradient(circle, rgba(0, 183, 255, 0.22), rgba(126, 77, 255, 0.12) 42%, transparent 70%);
+    animation: orbFloatTwo 19s ease-in-out infinite alternate;
+}
+
+/* Headings get a subtle cool gradient without changing sizing */
+h1,
+h2,
+h3 {
+    text-shadow: 0 0 22px rgba(117, 106, 255, 0.10);
+}
+
+/* Global buttons */
+button {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background:
+        linear-gradient(135deg, #5b4cf0 0%, #6d5dfc 48%, #368dff 100%);
+    border-color: rgba(157, 167, 255, 0.58);
+    box-shadow:
+        0 8px 20px rgba(50, 59, 190, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+button::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    opacity: 0;
+    background:
+        linear-gradient(135deg, #806fff 0%, #3a8dff 52%, #5b4cf0 100%);
+    transition: opacity 0.28s ease;
+}
+
+button:hover::before {
+    opacity: 1;
+}
+
+button:hover {
+    background:
+        linear-gradient(135deg, #806fff 0%, #3a8dff 52%, #5b4cf0 100%);
+    border-color: rgba(192, 199, 255, 0.80);
+    box-shadow:
+        0 12px 30px rgba(73, 91, 255, 0.32),
+        0 0 22px rgba(74, 153, 255, 0.12);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid rgba(149, 178, 255, 0.85);
+    outline-offset: 3px;
+}
+
+/* Inputs */
+input {
+    background:
+        linear-gradient(135deg, rgba(8, 13, 31, 0.96), rgba(14, 20, 42, 0.92));
+    border-color: rgba(125, 142, 255, 0.24);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+input:hover {
+    border-color: rgba(139, 158, 255, 0.50);
+}
+
+input:focus {
+    border-color: #8176ff;
+    box-shadow:
+        0 0 0 3px rgba(109, 93, 252, 0.16),
+        0 0 22px rgba(48, 144, 255, 0.08);
+}
+
+/* Main cards: dark glass + animated border glow */
+.form-container,
+.container,
+.chat-wrapper,
+.chat-container,
+.admin-container,
+.admin-page .admin-container {
+    position: relative;
+    background:
+        linear-gradient(145deg,
+            rgba(18, 25, 50, 0.92),
+            rgba(7, 12, 29, 0.94)) !important;
+    border-color: rgba(126, 142, 255, 0.24) !important;
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.46),
+        0 0 0 1px rgba(255, 255, 255, 0.015),
+        0 0 50px rgba(77, 88, 255, 0.08) !important;
+}
+
+.form-container:hover,
+.container:hover,
+.chat-wrapper:hover,
+.chat-container:hover,
+.admin-container:hover,
+.admin-page .admin-container:hover {
+    border-color: rgba(144, 159, 255, 0.34) !important;
+}
+
+/* Dashboard user rows */
+.user,
+.users-page .section-panel .user {
+    background:
+        linear-gradient(135deg, rgba(18, 27, 53, 0.92), rgba(12, 18, 39, 0.92)) !important;
+    border-color: rgba(123, 141, 255, 0.18) !important;
+}
+
+.user:hover,
+.users-page .section-panel .user:hover {
+    background:
+        linear-gradient(135deg, rgba(25, 37, 72, 0.96), rgba(15, 24, 52, 0.96)) !important;
+    border-color: rgba(132, 153, 255, 0.42) !important;
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, 0.20),
+        0 0 24px rgba(74, 106, 255, 0.07);
+}
+
+/* Navigation toggles */
+.users-page .section-btn {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+        linear-gradient(135deg, rgba(18, 27, 53, 0.90), rgba(11, 17, 38, 0.90));
+    border-color: rgba(123, 141, 255, 0.20);
+}
+
+.users-page .section-btn::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    opacity: 0;
+    transform: translateX(-20%);
+    background:
+        linear-gradient(110deg,
+            transparent 0%,
+            rgba(129, 118, 255, 0.14) 35%,
+            rgba(55, 151, 255, 0.16) 60%,
+            transparent 100%);
+    transition: opacity 0.3s ease, transform 0.35s ease;
+}
+
+.users-page .section-btn:hover::after,
+.users-page .section-btn.active::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.users-page .section-btn:hover {
+    background:
+        linear-gradient(135deg, rgba(29, 41, 80, 0.98), rgba(17, 27, 58, 0.98));
+    border-color: rgba(143, 161, 255, 0.55);
+}
+
+.users-page .section-btn.active {
+    background:
+        linear-gradient(135deg, #5548e8 0%, #6c5dfc 50%, #397ff2 100%);
+    border-color: rgba(174, 183, 255, 0.70);
+    box-shadow:
+        0 9px 24px rgba(72, 80, 255, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    animation: activeTogglePulse 2.4s ease-in-out infinite;
+}
+
+/* Section panels */
+.users-page .section-panel {
+    background:
+        linear-gradient(145deg, rgba(16, 24, 49, 0.88), rgba(8, 13, 30, 0.92)) !important;
+    border-color: rgba(124, 142, 255, 0.20);
+}
+
+/* Warning dialog */
+#warningDialog {
+    background:
+        rgba(2, 5, 15, 0.72) !important;
+}
+
+.dialog-content {
+    background:
+        linear-gradient(145deg, rgba(22, 31, 61, 0.98), rgba(8, 13, 31, 0.99)) !important;
+    border-color: rgba(145, 159, 255, 0.34) !important;
+    box-shadow:
+        0 28px 80px rgba(0, 0, 0, 0.58),
+        0 0 45px rgba(80, 89, 255, 0.12) !important;
+}
+
+/* Chat header */
+.chat-header {
+    background:
+        linear-gradient(135deg, rgba(19, 29, 57, 0.98), rgba(12, 18, 39, 0.98));
+    border-bottom-color: rgba(126, 143, 255, 0.18);
+}
+
+.chat-header a {
+    background: rgba(18, 27, 54, 0.55);
+    border-color: rgba(132, 150, 255, 0.30);
+}
+
+.chat-header a:hover {
+    background:
+        linear-gradient(135deg, rgba(86, 74, 232, 0.30), rgba(45, 139, 255, 0.20));
+    border-color: rgba(150, 165, 255, 0.62);
+}
+
+/* Chat area — explicitly dark, never white */
+.chat-box {
+    background:
+        radial-gradient(circle at 10% 0%, rgba(84, 77, 255, 0.08), transparent 32%),
+        radial-gradient(circle at 100% 100%, rgba(0, 174, 255, 0.06), transparent 30%),
+        linear-gradient(180deg, #080d20 0%, #060a18 100%) !important;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background:
+        linear-gradient(180deg, #6658e9, #348fff);
+    box-shadow: 0 0 10px rgba(93, 108, 255, 0.25);
+}
+
+.chat-box::-webkit-scrollbar-thumb:hover {
+    background:
+        linear-gradient(180deg, #8a7dff, #56a7ff);
+}
+
+/* Chat bubbles */
+.message.sent {
+    background:
+        linear-gradient(135deg, #5749e7 0%, #705ffb 48%, #368dff 100%) !important;
+    box-shadow:
+        0 8px 22px rgba(67, 81, 231, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.message.received {
+    background:
+        linear-gradient(135deg, rgba(22, 31, 61, 0.98), rgba(14, 22, 47, 0.98)) !important;
+    border-color: rgba(126, 144, 255, 0.20) !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.blocked-message {
+    background:
+        linear-gradient(135deg, rgba(29, 24, 60, 0.74), rgba(11, 21, 44, 0.78));
+    border-color: rgba(144, 126, 255, 0.44);
+}
+
+/* Chat input */
+.input-area {
+    background:
+        linear-gradient(135deg, rgba(15, 23, 48, 0.98), rgba(9, 15, 33, 0.98));
+    border-top-color: rgba(126, 143, 255, 0.18);
+}
+
+/* Notifications */
+.notification {
+    background:
+        linear-gradient(135deg, rgba(20, 29, 59, 0.97), rgba(10, 16, 36, 0.97));
+    border-color: rgba(136, 153, 255, 0.30);
+    border-left-color: #8d80ff;
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.34),
+        0 0 24px rgba(83, 96, 255, 0.08);
+}
+
+/* Admin tables */
+.table-wrapper,
+.admin-page .table-wrapper,
+table,
+.admin-page table {
+    background: #080d1d !important;
+    border-color: rgba(123, 141, 255, 0.20);
+}
+
+.admin-page th {
+    background:
+        linear-gradient(135deg, #18234a, #101a37) !important;
+    border-bottom-color: rgba(142, 158, 255, 0.30) !important;
+}
+
+.admin-page td {
+    background: rgba(8, 13, 29, 0.96) !important;
+    border-bottom-color: rgba(116, 132, 245, 0.14) !important;
+}
+
+.admin-page tbody tr:hover td,
+tbody tr:hover {
+    background:
+        linear-gradient(90deg, rgba(58, 67, 150, 0.20), rgba(23, 61, 123, 0.14)) !important;
+}
+
+/* Error and badge colors */
+.error-message {
+    background:
+        linear-gradient(135deg, rgba(92, 70, 255, 0.15), rgba(33, 118, 255, 0.09));
+    border-color: rgba(133, 151, 255, 0.34);
+    border-left-color: #8b7dff;
+}
+
+.abusive-badge {
+    background:
+        linear-gradient(135deg, rgba(94, 77, 240, 0.24), rgba(49, 116, 255, 0.16));
+    border-color: rgba(128, 143, 255, 0.42);
+    color: #b8c3ff;
+}
+
+.abusive-badge:hover {
+    background:
+        linear-gradient(135deg, rgba(108, 91, 255, 0.34), rgba(58, 137, 255, 0.24));
+    border-color: rgba(173, 184, 255, 0.66);
+}
+
+/* Accent links */
+a {
+    color: #a89cff;
+}
+
+a:hover {
+    color: #d7e0ff;
+}
+
+/* Smooth animated entrance remains layout-safe */
+.form-container,
+.container,
+.admin-container,
+.admin-page .admin-container {
+    animation: premiumFadeUp 0.55s cubic-bezier(.2, .8, .2, 1);
+}
+
+.chat-wrapper {
+    animation: premiumFadeUp 0.55s cubic-bezier(.2, .8, .2, 1), cardGlow 5s ease-in-out infinite alternate;
+}
+
+/* Additional keyframes */
+@keyframes auroraShift {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 100% 100%;
+    }
+}
+
+@keyframes orbFloatOne {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate3d(14vw, 8vh, 0) scale(1.14);
+    }
+}
+
+@keyframes orbFloatTwo {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate3d(-12vw, -9vh, 0) scale(1.12);
+    }
+}
+
+@keyframes activeTogglePulse {
+
+    0%,
+    100% {
+        box-shadow:
+            0 9px 24px rgba(72, 80, 255, 0.24),
+            0 0 0 0 rgba(103, 119, 255, 0.16);
+    }
+
+    50% {
+        box-shadow:
+            0 10px 28px rgba(72, 80, 255, 0.34),
+            0 0 0 5px rgba(103, 119, 255, 0);
+    }
+}
+
+@keyframes premiumFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes cardGlow {
+    0% {
+        box-shadow:
+            0 24px 70px rgba(0, 0, 0, 0.46),
+            0 0 26px rgba(83, 86, 255, 0.06);
+    }
+
+    100% {
+        box-shadow:
+            0 24px 70px rgba(0, 0, 0, 0.46),
+            0 0 42px rgba(49, 139, 255, 0.12);
+    }
+}
+
+/* Respect accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Keep visual effects lightweight on smaller screens */
+@media (max-width: 768px) {
+
+    body::before,
+    body::after {
+        filter: blur(34px);
+        opacity: 0.24;
+    }
+}
+
+@media (max-width: 520px) {
+    .users-page .section-btn.active {
+        animation: none;
+    }
+
+    .chat-wrapper {
+        animation: premiumFadeUp 0.45s ease;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   FORCE FULL DARK AURORA BACKGROUND
+   ADD THIS AT THE VERY END OF THE CSS FILE
+========================================================= */
+
+html {
+    min-height: 100%;
+    background: #050816 !important;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at 12% 15%,
+            rgba(100, 83, 255, 0.24),
+            transparent 28%),
+        radial-gradient(circle at 88% 18%,
+            rgba(0, 174, 255, 0.18),
+            transparent 26%),
+        radial-gradient(circle at 75% 85%,
+            rgba(121, 70, 255, 0.20),
+            transparent 30%),
+        radial-gradient(circle at 18% 88%,
+            rgba(35, 113, 255, 0.14),
+            transparent 28%),
+        linear-gradient(135deg,
+            #02040d 0%,
+            #070b1c 42%,
+            #0a0d22 100%) !important;
+
+    background-size: 130% 130% !important;
+    background-attachment: fixed !important;
+
+    animation: auroraBackground 16s ease-in-out infinite alternate;
+}
+
+/* Animated glowing atmosphere */
+body::before {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+
+    top: -180px;
+    left: -150px;
+
+    pointer-events: none;
+    z-index: -1;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            rgba(94, 77, 255, 0.28) 0%,
+            rgba(65, 85, 255, 0.12) 38%,
+            transparent 72%);
+
+    filter: blur(45px);
+
+    animation: floatingGlowOne 15s ease-in-out infinite alternate;
+}
+
+/* Second animated blue/purple glow */
+body::after {
+    content: "";
+    position: fixed;
+    width: 600px;
+    height: 600px;
+
+    right: -220px;
+    bottom: -240px;
+
+    pointer-events: none;
+    z-index: -1;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(circle,
+            rgba(0, 151, 255, 0.20) 0%,
+            rgba(100, 72, 255, 0.13) 40%,
+            transparent 72%);
+
+    filter: blur(55px);
+
+    animation: floatingGlowTwo 18s ease-in-out infinite alternate;
+}
+
+
+/* Make sure every main page wrapper stays transparent */
+.center-page,
+.users-page,
+.admin-page,
+.chat-page {
+    background: transparent !important;
+}
+
+
+/* Extra premium glow behind the chat area */
+.chat-page {
+    position: relative;
+}
+
+
+/* Keep the chat container clearly separated from background */
+.chat-wrapper {
+    background:
+        linear-gradient(145deg,
+            rgba(18, 25, 50, 0.98),
+            rgba(7, 12, 29, 0.99)) !important;
+
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.55),
+        0 0 45px rgba(88, 82, 255, 0.12),
+        0 0 90px rgba(30, 124, 255, 0.05) !important;
+}
+
+
+/* Animations */
+
+@keyframes auroraBackground {
+
+    0% {
+        background-position:
+            0% 0%,
+            100% 0%,
+            100% 100%,
+            0% 100%,
+            0% 50%;
+    }
+
+    100% {
+        background-position:
+            12% 8%,
+            88% 10%,
+            90% 88%,
+            10% 92%,
+            100% 50%;
+    }
+}
+
+
+@keyframes floatingGlowOne {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(160px, 100px) scale(1.18);
+    }
+}
+
+
+@keyframes floatingGlowTwo {
+
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(-160px, -100px) scale(1.15);
+    }
+}
+
+
+/* Mobile performance */
+@media (max-width: 768px) {
+
+    body {
+        background-attachment: scroll !important;
+    }
+
+    body::before {
+        width: 380px;
+        height: 380px;
+        filter: blur(35px);
+    }
+
+    body::after {
+        width: 420px;
+        height: 420px;
+        filter: blur(40px);
+    }
+}
+
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    body,
+    body::before,
+    body::after {
+        animation: none !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   LOGIN / REGISTER PREMIUM TOGGLE STYLE
+========================================================= */
+
+/* Parent container if available */
+.auth-toggle,
+.login-register-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+    margin: 0 auto 25px;
+
+    padding: 5px;
+
+    border: 1px solid rgba(135, 150, 255, 0.28);
+    border-radius: 14px;
+
+    background:
+        linear-gradient(135deg,
+            rgba(12, 19, 42, 0.90),
+            rgba(20, 28, 58, 0.80));
+
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+
+/* Toggle buttons / links */
+.auth-toggle a,
+.auth-toggle button,
+.login-register-toggle a,
+.login-register-toggle button {
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 115px;
+
+    padding: 11px 20px;
+
+    color: var(--muted);
+
+    background: transparent;
+
+    border: none;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        color 0.3s ease,
+        background 0.3s ease,
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+/* Hover effect */
+.auth-toggle a:hover,
+.auth-toggle button:hover,
+.login-register-toggle a:hover,
+.login-register-toggle button:hover {
+
+    color: var(--white);
+
+    background:
+        rgba(105, 94, 255, 0.10);
+
+    transform: translateY(-1px);
+}
+
+
+/* ACTIVE TOGGLE */
+.auth-toggle a.active,
+.auth-toggle button.active,
+.login-register-toggle a.active,
+.login-register-toggle button.active {
+
+    color: #ffffff;
+
+    background:
+        linear-gradient(135deg,
+            #5548e8 0%,
+            #6d5dfc 48%,
+            #368dff 100%);
+
+    box-shadow:
+        0 6px 18px rgba(71, 79, 240, 0.30),
+        0 0 20px rgba(62, 137, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+    animation: authTogglePulse 2.5s ease-in-out infinite;
+}
+
+
+/* Moving shine effect */
+.auth-toggle a.active::before,
+.auth-toggle button.active::before,
+.login-register-toggle a.active::before,
+.login-register-toggle button.active::before {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -80%;
+
+    width: 45%;
+    height: 100%;
+
+    transform: skewX(-20deg);
+
+    background:
+        linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.20),
+            transparent);
+
+    animation: toggleShine 3s ease-in-out infinite;
+}
+
+
+/* Keyboard accessibility */
+.auth-toggle a:focus-visible,
+.auth-toggle button:focus-visible,
+.login-register-toggle a:focus-visible,
+.login-register-toggle button:focus-visible {
+
+    outline: 2px solid #9eabff;
+
+    outline-offset: 3px;
+}
+
+
+/* Glow animation */
+@keyframes authTogglePulse {
+
+    0%,
+    100% {
+
+        box-shadow:
+            0 6px 18px rgba(71, 79, 240, 0.28),
+            0 0 0 rgba(83, 112, 255, 0);
+    }
+
+    50% {
+
+        box-shadow:
+            0 8px 22px rgba(71, 79, 240, 0.36),
+            0 0 20px rgba(83, 112, 255, 0.15);
+    }
+}
+
+
+/* Light sweep */
+@keyframes toggleShine {
+
+    0% {
+        left: -80%;
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    50% {
+        left: 130%;
+        opacity: 0;
+    }
+
+    100% {
+        left: 130%;
+        opacity: 0;
+    }
+}
+
+
+/* Mobile */
+@media (max-width: 400px) {
+
+    .auth-toggle,
+    .login-register-toggle {
+        width: 100%;
+    }
+
+    .auth-toggle a,
+    .auth-toggle button,
+    .login-register-toggle a,
+    .login-register-toggle button {
+        flex: 1;
+        min-width: 0;
+        padding: 10px 12px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PREMIUM BACK BUTTON
+========================================================= */
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 9px 15px;
+
+    color: var(--text);
+    background:
+        linear-gradient(135deg,
+            rgba(18, 27, 53, 0.92),
+            rgba(10, 17, 38, 0.92));
+
+    border: 1px solid rgba(126, 144, 255, 0.28);
+    border-radius: 9px;
+
+    text-decoration: none;
+
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.back-btn:hover {
+    color: #ffffff;
+
+    background:
+        linear-gradient(135deg,
+            rgba(78, 67, 210, 0.85),
+            rgba(39, 111, 210, 0.85));
+
+    border-color: rgba(153, 168, 255, 0.60);
+
+    transform: translateX(-3px);
+
+    box-shadow:
+        0 8px 22px rgba(55, 74, 220, 0.25),
+        0 0 18px rgba(72, 133, 255, 0.10);
+}
+
+.back-btn:active {
+    transform: translateX(-1px) scale(0.98);
+}
+
+.back-arrow {
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: transform 0.25s ease;
+}
+
+.back-btn:hover .back-arrow {
+    transform: translateX(-3px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   LOGIN / REGISTER MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+    html {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    body.center-page {
+        width: 100%;
+        min-height: 100vh;
+
+        margin: 0;
+        padding: 12px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        box-sizing: border-box;
+    }
+
+    body.center-page .form-container {
+        width: 100%;
+        max-width: 100%;
+
+        margin: 0;
+        padding: 30px 20px;
+
+        box-sizing: border-box;
+    }
+
+    body.center-page .form-container form {
+        width: 100%;
+    }
+
+    body.center-page .form-container input {
+        width: 100%;
+        min-width: 0;
+
+        box-sizing: border-box;
+
+        height: 50px;
+
+        font-size: 16px;
+    }
+
+    body.center-page .form-container button {
+        width: 100%;
+
+        box-sizing: border-box;
+
+        min-height: 50px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media screen and (max-width: 380px) {
+
+    body.center-page {
+        padding: 8px;
+    }
+
+    body.center-page .form-container {
+        width: 100%;
+        max-width: 100%;
+
+        padding: 25px 16px;
+    }
+}

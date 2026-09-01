@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Chat | Cyber Aggression Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+
+</head>
+
+<body class="chat-page">
+
+    <div id="notificationBox"></div>
+
+    <div class="chat-wrapper">
+
+        <div class="chat-header">
+            <a href="javascript:history.back()" class="back-btn">
+                <span class="back-arrow">←</span>
+                Back
+            </a>
+
+            <span id="chatUser">
+                Connecting...
+            </span>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+        <div id="chatBox" class="chat-box">
+        </div>
+
+        <div class="input-area">
+
+            <input id="messageInput" placeholder="Type a message..." autocomplete="off">
+
+            <button onclick="sendMessage()">
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let username = "{{ session['user'] }}";
+        let receiver = "{{ receiver }}";
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                document.getElementById("chatUser").innerText =
+                    "Chat with " + receiver;
+
+                // Send message when Enter is pressed
+                document.getElementById("messageInput").addEventListener(
+                    "keydown",
+                    function (event) {
+
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            sendMessage();
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>

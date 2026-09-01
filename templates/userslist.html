@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Available Users | Cyber Aggression Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+
+
+
+<body class="users-page">
+
+
+    <div class="container users-container">
+
+
+        <div class="users-header">
+
+            <h1>Connect with Users</h1>
+
+        </div>
+
+
+        <!-- SECTION NAVIGATION BUTTONS -->
+
+        <div class="section-nav">
+
+            <button class="section-btn active" onclick="showSection('friends-panel', this)">
+                Friends
+            </button>
+
+
+            <button class="section-btn" onclick="showSection('users-panel', this)">
+                Users
+            </button>
+
+
+            <button class="section-btn" onclick="showSection('requests-panel', this)">
+
+                Friend Requests
+
+            </button>
+
+
+            <button class="section-btn" onclick="showSection('sent-panel', this)">
+                Sent Requests
+            </button>
+
+        </div>
+
+
+        <!-- FRIENDS -->
+
+        <div id="friends-panel" class="section section-panel active">
+
+            <h3>Friends</h3>
+
+            <div id="friends"></div>
+
+        </div>
+
+
+        <!-- AVAILABLE USERS -->
+
+        <div id="users-panel" class="section section-panel">
+
+            <h3>Users</h3>
+
+            <div id="users"></div>
+
+        </div>
+
+
+        <!-- FRIEND REQUESTS -->
+
+        <div id="requests-panel" class="section section-panel">
+
+            <h3>Friend Requests</h3>
+
+            <div id="requests"></div>
+
+        </div>
+
+
+        <!-- SENT REQUESTS -->
+
+        <div id="sent-panel" class="section section-panel">
+
+            <h3>Sent Requests</h3>
+
+            <div id="sent_requests"></div>
+
+        </div>
+
+
+        <!-- LOGOUT BUTTON -->
+
+        <div class="logout-container">
+
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- WARNING DIALOG -->
+
+    <div id="warningDialog">
+
+        <div class="dialog-content">
+
+            <h3>⚠ Safety Warning</h3>
+
+            <p>
+                This user has previous abuse violations.
+                <br>
+                Are you sure you want to accept this request?
+            </p>
+
+
+            <button onclick="confirmAccept()">
+                Accept Anyway
+            </button>
+
+
+            <button class="reject" onclick="closeDialog()">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- SOCKET.IO -->
+
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}">
+    </script>
+
+
+    <script>
+
+        let socket = null;
+        let currentSender = null;
+
+
+        // Load all sections initially
+
+        loadFriends();
+        loadUnreadCounts();
+        loadUsers();
+        loadRequests();
+        loadSentRequests();
+
+
+        // ---------- SECTION SWITCHING ----------
+
+        function showSection(sectionId, clickedButton) {
+
+            const panels =
+                document.querySelectorAll(".section-panel");
+
+            const buttons =
+                document.querySelectorAll(".section-btn");
+
+
+            panels.forEach(panel => {
+
+                panel.classList.remove("active");
+
+            });
+
+
+            buttons.forEach(button => {
+
+                button.classList.remove("active");
+
+            });
+
+
+            document
+                .getElementById(sectionId)
+                .classList.add("active");
+
+
+            clickedButton.classList.add("active");
+
+
+            // Refresh selected section
+
+            if (sectionId === "friends-panel") {
+
+                loadFriends();
+                loadUnreadCounts();
+
+            }
+
+            else if (sectionId === "users-panel") {
+
+                loadUsers();
+
+            }
+
+            else if (sectionId === "requests-panel") {
+
+                loadRequests();
+
+            }
+
+            else if (sectionId === "sent-panel") {
+
+                loadSentRequests();
+
+            }
+
+        }
+
+
+        // ---------- SOCKET CONNECTION ----------
+
+        try {
+
+            socket = io();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Socket.IO connection failed:",
+                error
+            );
+
+        }
+
+
+        // ---------- FRIENDS ----------
+
+        function loadFriends() {
+
+            fetch("/get_friends")
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    let div =
+                        document.getElementById("friends");
+
+
+                    div.innerHTML = "";
+
+
+                    if (data.friends.length === 0) {
+
+                        div.innerHTML =
+                            "<p class='empty-message'>No friends yet.</p>";
+
+                        return;
+
+                    }
+
+
+                    data.friends.forEach(friend => {
+
+                        let d =
+                            document.createElement("div");
+
+
+                        d.className = "user";
+
+
+                        d.innerHTML = `
+                            <div class="friend-name-wrapper">
+                                <span>${friend}</span>
+                                <span
+                                    class="unread-badge"
+                                    id="unread-${encodeURIComponent(friend)}"
+                                    style="display:none;">
+                                </span>
+                            </div>
+
+                            <button
+                                class="chat"
+                                onclick="window.location='/chat/${friend}'">
+
+                                Chat
+
+                            </button>
+
+                        `;
+
+
+                        div.appendChild(d);
+
+                    });
+
+                    loadUnreadCounts();
+
+                });
+
+        }
+
+
+        // ---------- UNREAD MESSAGE COUNTS ----------
+        function loadUnreadCounts() {
+
+            fetch("/get_unread_counts")
+                .then(res => res.json())
+                .then(data => {
+
+                    document.querySelectorAll(".unread-badge").forEach(
+                        badge => {
+                            badge.style.display = "none";
+                            badge.textContent = "";
+                        }
+                    );
+
+                    Object.keys(data.unread).forEach(friend => {
+
+                        const badge =
+                            document.getElementById(
+                                "unread-" + encodeURIComponent(friend)
+                            );
+
+                        if (!badge) {
+                            return;
+                        }
+
+                        const count = data.unread[friend];
+
+                        if (count > 0) {
+                            badge.textContent = "     (+ " + count + " new messages)";
+                            badge.style.display = "inline-flex";
+                        }
+
+                    });
+
+                })
+                .catch(error => {
+                    console.error(
+                        "Error loading unread message counts:",
+                        error
+                    );
+                });
+        }
+
+
+        // ---------- USERS ----------
+
+        function loadUsers() {
+
+            fetch("/get_users")
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    let div =
+                        document.getElementById("users");
+
+
+                    div.innerHTML = "";
+
+
+                    if (data.users.length === 0) {
+
+                        div.innerHTML =
+                            "<p class='empty-message'>No users available.</p>";
+
+                        return;
+
+                    }
+
+
+                    data.users.forEach(user => {
+
+                        let d =
+                            document.createElement("div");
+
+
+                        d.className = "user";
+
+
+                        d.innerHTML = `
+
+                            <span>${user}</span>
+
+                            <button
+                                onclick="sendRequest('${user}')">
+
+                                Send Request
+
+                            </button>
+
+                        `;
+
+
+                        div.appendChild(d);
+
+                    });
+
+                });
+
+        }
+
+
+        // ---------- SEND REQUEST ----------
+
+        function sendRequest(user) {
+
+            fetch("/send_request", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+                body:
+                    "receiver=" +
+                    encodeURIComponent(user)
+
+            })
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    if (data.status === "already_sent") {
+
+                        alert("Request already sent");
+
+                    }
+
+                    else {
+
+                        alert("Request sent");
+
+                        loadUsers();
+
+                        loadSentRequests();
+
+                    }
+
+                });
+
+        }
+
+
+        // ---------- FRIEND REQUESTS ----------
+
+
+        function loadRequests() {
+
+            fetch("/get_requests")
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    let div =
+                        document.getElementById("requests");
+
+                    div.innerHTML = "";
+
+
+                    if (data.requests.length === 0) {
+
+                        div.innerHTML = `
+                    <p class="empty-message">
+                        No pending friend requests.
+                    </p>
+                `;
+
+                        return;
+                    }
+
+
+                    data.requests.forEach(req => {
+
+                        let sender = req.sender;
+
+                        let abusiveBadge = "";
+
+
+                        if (req.is_abuser) {
+
+                            abusiveBadge = `
+                        <span class="abusive-badge">
+                            ⚠ Abusive User
+                        </span>
+                    `;
+                        }
+
+
+                        let d =
+                            document.createElement("div");
+
+                        d.className = "user";
+
+
+                        d.innerHTML = `
+
+                    <div class="request-user-info">
+
+                        <span class="username">
+                            ${sender}
+                        </span>
+
+                        ${abusiveBadge}
+
+                    </div>
+
+
+                    <div class="request-actions">
+
+                        <button
+                            onclick="acceptRequest('${sender}', ${req.is_abuser})">
+
+                            Accept
+
+                        </button>
+
+
+                        <button
+                            class="reject"
+                            onclick="rejectRequest('${sender}')">
+
+                            Reject
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                        div.appendChild(d);
+
+                    });
+
+                })
+
+                .catch(error => {
+
+                    console.error(
+                        "Error loading friend requests:",
+                        error
+                    );
+
+                });
+
+        }
+
+
+
+
+
+        // ---------- SENT REQUESTS ----------
+
+        function loadSentRequests() {
+
+            fetch("/get_sent_requests")
+
+                .then(res => res.json())
+
+                .then(data => {
+
+                    let div =
+                        document.getElementById(
+                            "sent_requests"
+                        );
+
+
+                    div.innerHTML = "";
+
+
+                    if (data.requests.length === 0) {
+
+                        div.innerHTML =
+                            "<p class='empty-message'>No sent requests.</p>";
+
+                        return;
+
+                    }
+
+
+                    data.requests.forEach(req => {
+
+                        let d =
+                            document.createElement("div");
+
+
+                        d.className = "user";
+
+
+                        let button = "";
+
+
+                        if (req.status === "pending") {
+
+                            button =
+                                "<button disabled>Pending</button>";
+
+                        }
+
+
+                        else if (
+                            req.status === "accepted"
+                        ) {
+
+                            button =
+                                "<button class='accept' disabled>Accepted</button>";
+
+                        }
+
+
+                        else if (
+                            req.status === "rejected"
+                        ) {
+
+                            button =
+                                "<button class='reject' disabled>Rejected</button>";
+
+                        }
+
+
+                        d.innerHTML = `
+
+                            <span>
+                                ${req.receiver}
+                            </span>
+
+                            ${button}
+
+                        `;
+
+
+                        div.appendChild(d);
+
+                    });
+
+                });
+
+        }
+
+
+        // ---------- ACCEPT REQUEST ----------
+
+        function acceptRequest(sender, isAbuser) {
+
+            if (isAbuser) {
+
+                currentSender = sender;
+
+
+                document
+                    .getElementById("warningDialog")
+                    .style.display = "flex";
+
+
+                return;
+
+            }
+
+
+            fetch("/accept_request", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+                body:
+                    "sender=" +
+                    encodeURIComponent(sender)
+
+            })
+
+                .then(res => res.json())
+
+                .then(() => {
+
+                    loadFriends();
+
+                    loadRequests();
+
+                    loadUsers();
+
+
+                    window.location =
+                        "/chat/" + sender;
+
+                });
+
+        }
+
+
+        // ---------- REJECT REQUEST ----------
+
+        function rejectRequest(sender) {
+
+            fetch("/reject_request", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+                body:
+                    "sender=" +
+                    encodeURIComponent(sender)
+
+            })
+
+                .then(res => res.json())
+
+                .then(() => {
+
+                    loadRequests();
+
+                    loadUsers();
+
+                    loadSentRequests();
+
+                });
+
+        }
+
+
+        // ---------- CONFIRM ACCEPT ----------
+
+        function confirmAccept() {
+
+            document
+                .getElementById("warningDialog")
+                .style.display = "none";
+
+
+            fetch("/accept_request", {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded"
+
+                },
+
+                body:
+                    "sender=" +
+                    encodeURIComponent(currentSender)
+
+            })
+
+                .then(res => res.json())
+
+                .then(() => {
+
+                    loadFriends();
+
+                    loadRequests();
+
+
+                    window.location =
+                        "/chat/" + currentSender;
+
+                });
+
+        }
+
+
+        // ---------- CLOSE DIALOG ----------
+
+        function closeDialog() {
+
+            document
+                .getElementById("warningDialog")
+                .style.display = "none";
+
+        }
+
+
+        // ---------- REAL-TIME EVENTS ----------
+
+        if (socket) {
+
+            socket.on(
+                "unread_update",
+                function () {
+                    loadFriends();
+                    loadUnreadCounts();
+                }
+            );
+
+            socket.on(
+                "new_request",
+
+                function () {
+
+                    loadRequests();
+
+                }
+
+            );
+
+
+            socket.on(
+                "accepted_redirect",
+
+                function (data) {
+
+                    alert(
+                        data.user +
+                        " accepted your request"
+                    );
+
+
+                    loadFriends();
+
+                    loadUsers();
+
+                    loadSentRequests();
+
+
+                    window.location =
+                        "/chat/" + data.user;
+
+                }
+
+            );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

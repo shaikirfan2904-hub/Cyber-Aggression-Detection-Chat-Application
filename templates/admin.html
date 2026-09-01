@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Cyber Aggression Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+
+
+
+
+
+
+
+<body class="admin-page">
+
+    <div class="admin-container">
+
+
+        <div class="admin-header">
+
+            <h2>
+                Admin Moderation Dashboard
+            </h2>
+
+            <a href="{{ url_for('admin_logout') }}" class="logout-btn">
+                Logout
+            </a>
+
+        </div>
+
+
+        <!-- AGGRESSIVE USERS -->
+
+        <div class="admin-section">
+
+            <h3>
+                Aggressive Users
+            </h3>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>User</th>
+
+                            <th>Violations</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for user, count in aggressive_users.items() %}
+
+                        <tr>
+
+                            <td>
+                                {{ user }}
+                            </td>
+
+                            <td class="highlight">
+                                {{ count }}
+                            </td>
+
+                        </tr>
+
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="2">
+                                No users exceeded 3 violations yet.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <!-- BLOCKED MESSAGES -->
+
+        <div class="admin-section">
+
+            <h3>
+                Blocked Messages
+            </h3>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>User</th>
+
+                            <th>Message</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for msg in blocked_messages %}
+
+                        <tr>
+
+                            <td>
+                                {{ msg.user }}
+                            </td>
+
+                            <td>
+                                {{ msg.message }}
+                            </td>
+
+                        </tr>
+
+
+                        {% else %}
+
+                        <tr>
+
+                            <td colspan="2">
+                                No blocked messages yet.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

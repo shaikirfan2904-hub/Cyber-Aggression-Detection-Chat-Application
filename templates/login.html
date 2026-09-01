@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Login</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+<body class="center-page">
+
+    <div class="form-container">
+
+        <!-- LOGIN / REGISTER TOGGLE -->
+        <div class="auth-toggle">
+
+            <a href="/login" class="auth-toggle-btn active">
+                Login
+            </a>
+
+            <a href="/register" class="auth-toggle-btn">
+                Register
+            </a>
+
+        </div>
+
+
+        <h1>Login</h1>
+
+
+        {% if error %}
+
+        <div class="error-message">
+            {{ error }}
+        </div>
+
+        {% endif %}
+
+
+        <form method="POST">
+
+            <input type="text" name="username" placeholder="Username" required>
+
+            <input type="password" name="password" placeholder="Password" required>
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+
+
+
+
+        <p>Are you an admin?</p>
+
+        <a href="/admin_login" class="admin-link">
+
+            Admin Login
+
+        </a>
+
+    </div>
+
+</body>
+
+</html>
