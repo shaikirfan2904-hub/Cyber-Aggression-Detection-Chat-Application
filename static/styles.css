@@ -2322,252 +2322,6 @@ a:hover {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* =========================================================
-   FORCE FULL DARK AURORA BACKGROUND
-   ADD THIS AT THE VERY END OF THE CSS FILE
-========================================================= */
-
-html {
-    min-height: 100%;
-    background: #050816 !important;
-}
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    background:
-        radial-gradient(circle at 12% 15%,
-            rgba(100, 83, 255, 0.24),
-            transparent 28%),
-        radial-gradient(circle at 88% 18%,
-            rgba(0, 174, 255, 0.18),
-            transparent 26%),
-        radial-gradient(circle at 75% 85%,
-            rgba(121, 70, 255, 0.20),
-            transparent 30%),
-        radial-gradient(circle at 18% 88%,
-            rgba(35, 113, 255, 0.14),
-            transparent 28%),
-        linear-gradient(135deg,
-            #02040d 0%,
-            #070b1c 42%,
-            #0a0d22 100%) !important;
-
-    background-size: 130% 130% !important;
-    background-attachment: fixed !important;
-
-    animation: auroraBackground 16s ease-in-out infinite alternate;
-}
-
-/* Animated glowing atmosphere */
-body::before {
-    content: "";
-    position: fixed;
-    width: 500px;
-    height: 500px;
-
-    top: -180px;
-    left: -150px;
-
-    pointer-events: none;
-    z-index: -1;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(circle,
-            rgba(94, 77, 255, 0.28) 0%,
-            rgba(65, 85, 255, 0.12) 38%,
-            transparent 72%);
-
-    filter: blur(45px);
-
-    animation: floatingGlowOne 15s ease-in-out infinite alternate;
-}
-
-/* Second animated blue/purple glow */
-body::after {
-    content: "";
-    position: fixed;
-    width: 600px;
-    height: 600px;
-
-    right: -220px;
-    bottom: -240px;
-
-    pointer-events: none;
-    z-index: -1;
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(circle,
-            rgba(0, 151, 255, 0.20) 0%,
-            rgba(100, 72, 255, 0.13) 40%,
-            transparent 72%);
-
-    filter: blur(55px);
-
-    animation: floatingGlowTwo 18s ease-in-out infinite alternate;
-}
-
-
-/* Make sure every main page wrapper stays transparent */
-.center-page,
-.users-page,
-.admin-page,
-.chat-page {
-    background: transparent !important;
-}
-
-
-/* Extra premium glow behind the chat area */
-.chat-page {
-    position: relative;
-}
-
-
-/* Keep the chat container clearly separated from background */
-.chat-wrapper {
-    background:
-        linear-gradient(145deg,
-            rgba(18, 25, 50, 0.98),
-            rgba(7, 12, 29, 0.99)) !important;
-
-    box-shadow:
-        0 28px 70px rgba(0, 0, 0, 0.55),
-        0 0 45px rgba(88, 82, 255, 0.12),
-        0 0 90px rgba(30, 124, 255, 0.05) !important;
-}
-
-
-/* Animations */
-
-@keyframes auroraBackground {
-
-    0% {
-        background-position:
-            0% 0%,
-            100% 0%,
-            100% 100%,
-            0% 100%,
-            0% 50%;
-    }
-
-    100% {
-        background-position:
-            12% 8%,
-            88% 10%,
-            90% 88%,
-            10% 92%,
-            100% 50%;
-    }
-}
-
-
-@keyframes floatingGlowOne {
-
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    100% {
-        transform: translate(160px, 100px) scale(1.18);
-    }
-}
-
-
-@keyframes floatingGlowTwo {
-
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    100% {
-        transform: translate(-160px, -100px) scale(1.15);
-    }
-}
-
-
-/* Mobile performance */
-@media (max-width: 768px) {
-
-    body {
-        background-attachment: scroll !important;
-    }
-
-    body::before {
-        width: 380px;
-        height: 380px;
-        filter: blur(35px);
-    }
-
-    body::after {
-        width: 420px;
-        height: 420px;
-        filter: blur(40px);
-    }
-}
-
-
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-
-    body,
-    body::before,
-    body::after {
-        animation: none !important;
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* =========================================================
    LOGIN / REGISTER PREMIUM TOGGLE STYLE
 ========================================================= */
@@ -2779,17 +2533,6 @@ body::after {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 /* =========================================================
    PREMIUM BACK BUTTON
 ========================================================= */
@@ -2861,21 +2604,6 @@ body::after {
 .back-btn:hover .back-arrow {
     transform: translateX(-3px);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /* =========================================================
@@ -2954,4 +2682,120 @@ body::after {
 
         padding: 25px 16px;
     }
+}
+
+
+/* ================================
+   FRIEND THREE-DOT MENU
+================================ */
+
+.friend-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-left: auto !important;
+}
+
+.friend-menu-wrapper {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+
+/* THREE DOT BUTTON */
+
+.friend-menu-button {
+    width: 38px !important;
+    height: 38px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: transparent !important;
+    color: #c7c4d8 !important;
+
+    border: 1px solid #3a374d !important;
+    border-radius: 7px !important;
+
+    font-size: 24px !important;
+    line-height: 1 !important;
+
+    cursor: pointer !important;
+}
+
+.friend-menu-button:hover {
+    background: #29263d !important;
+    color: #ffffff !important;
+}
+
+
+/* ================================
+   REMOVE FRIEND DROPDOWN
+================================ */
+
+/* IMPORTANT:
+   Hidden by default */
+.friend-menu-wrapper .friend-menu {
+    display: none !important;
+
+    position: absolute !important;
+
+    top: calc(100% + 6px) !important;
+    right: 0 !important;
+
+    width: 160px !important;
+
+    padding: 5px !important;
+
+    background: #181722 !important;
+
+    border: 1px solid #39364d !important;
+    border-radius: 8px !important;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+
+    z-index: 9999 !important;
+}
+
+
+/* ONLY show after clicking ⋮ */
+
+.friend-menu-wrapper .friend-menu.show {
+    display: block !important;
+}
+
+
+/* ================================
+   RED REMOVE FRIEND BUTTON
+================================ */
+
+.friend-menu-wrapper .remove-friend-button {
+    display: block !important;
+
+    width: 100% !important;
+
+    padding: 10px 12px !important;
+    margin: 0 !important;
+
+    background: #c62828 !important;
+    color: #ffffff !important;
+
+    border: none !important;
+    border-radius: 6px !important;
+
+    font-size: 14px !important;
+    font-weight: 600 !important;
+
+    text-align: left !important;
+
+    cursor: pointer !important;
+}
+
+.friend-menu-wrapper .remove-friend-button:hover {
+    background: #e53935 !important;
 }

@@ -5,7 +5,10 @@ from detection_engine import predict_aggression
 import os
 
 app = Flask(__name__)
-app.secret_key = "secretkey"
+app.secret_key = os.environ.get(
+    "FLASK_SECRET_KEY",
+    "development-secret-key"
+)
 
 socketio = SocketIO(
     app,
@@ -208,53 +211,77 @@ def logout():
 def get_users():
 
     if 'user' not in session:
-        return jsonify({"users": []})
+        return jsonify({
+            "users": []
+        }), 401
 
     current_user = session['user']
 
     cur = mysql.connection.cursor()
 
-    # Get all usernames except current user
-    cur.execute("""
-        SELECT username
-        FROM users
-        WHERE username != %s
-    """, (current_user,))
+    try:
 
-    rows = cur.fetchall()
+        # Get all users except current user
+        cur.execute("""
+            SELECT username
+            FROM users
+            WHERE username != %s
+        """, (current_user,))
 
-    # Get accepted friends of current user
-    cur.execute("""
-        SELECT
-            CASE
-                WHEN sender = %s THEN receiver
-                ELSE sender
-            END AS friend
-        FROM friend_requests
-        WHERE (sender = %s OR receiver = %s)
-        AND status = 'accepted'
-    """, (current_user, current_user, current_user))
-
-    friend_rows = cur.fetchall()
-
-    cur.close()
-
-    # Convert accepted friends into a set
-    friends = set(row[0] for row in friend_rows)
-
-    # Only show users who are NOT already friends
-    user_list = []
-
-    for row in rows:
-
-        username = row[0]
-
-        if username not in friends:
-            user_list.append(username)
-
-    return jsonify({"users": user_list})
+        rows = cur.fetchall()
 
 
+        # Get accepted friends
+        cur.execute("""
+            SELECT
+                CASE
+                    WHEN sender = %s THEN receiver
+                    ELSE sender
+                END AS friend
+            FROM friend_requests
+            WHERE (sender = %s OR receiver = %s)
+            AND status = 'accepted'
+        """, (
+            current_user,
+            current_user,
+            current_user
+        ))
+
+        friend_rows = cur.fetchall()
+
+
+        friends = {
+            row[0]
+            for row in friend_rows
+        }
+
+
+        user_list = [
+            row[0]
+            for row in rows
+            if row[0] not in friends
+        ]
+
+
+        return jsonify({
+            "users": user_list
+        })
+
+    except Exception as e:
+
+        print(
+            "Get users error:",
+            e
+        )
+
+        return jsonify({
+            "users": [],
+            "message": "Unable to load users."
+        }), 500
+
+    finally:
+
+        cur.close()
 
 
 
@@ -264,8 +291,30 @@ def get_users():
 @app.route('/send_request', methods=['POST'])
 def send_request():
 
+    if 'user' not in session:
+        return jsonify({
+            "status": "unauthorized",
+            "message": "Please login first."
+        }), 401
+
     sender = session['user']
-    receiver = request.form['receiver']
+
+    receiver = request.form.get(
+        'receiver',
+        ''
+    ).strip()
+
+    if not receiver:
+        return jsonify({
+            "status": "invalid",
+            "message": "Receiver username is required."
+        }), 400
+
+    if receiver == sender:
+        return jsonify({
+            "status": "invalid",
+            "message": "You cannot send a request to yourself."
+        }), 400
 
     cur = mysql.connection.cursor()
 
@@ -307,8 +356,13 @@ def send_request():
 @app.route('/get_requests')
 def get_requests():
 
-    user = session['user']
+    if 'user' not in session:
+        return jsonify({
+            "status": "unauthorized",
+            "requests": []
+        }), 401
 
+    user = session['user']
     cur = mysql.connection.cursor()
 
     cur.execute("""
@@ -349,6 +403,12 @@ def get_requests():
 # ---------------- GET SENT REQUESTS ----------------
 @app.route('/get_sent_requests')
 def get_sent_requests():
+
+    if 'user' not in session:
+        return jsonify({
+            "status": "unauthorized",
+            "requests": []
+        }), 401
 
     sender = session['user']
 
@@ -418,12 +478,226 @@ def get_friends():
 
 
 
+
+
+# ---------------- REMOVE FRIEND ----------------
+@app.route('/remove_friend', methods=['POST'])
+def remove_friend():
+
+    # Make sure user is logged in
+    if 'user' not in session:
+        return jsonify({
+            "status": "unauthorized"
+        }), 401
+
+    current_user = session['user']
+
+    friend = request.form.get(
+        'friend',
+        ''
+    ).strip()
+
+    if not friend:
+        return jsonify({
+            "status": "invalid",
+            "message": "Friend username is required."
+        }), 400
+
+    # Prevent removing yourself
+    if friend == current_user:
+        return jsonify({
+            "status": "invalid",
+            "message": "You cannot remove yourself."
+        }), 400
+
+    cur = mysql.connection.cursor()
+
+    try:
+
+        # -------------------------------------------------
+        # 1. CHECK WHETHER THEY ARE ACTUALLY FRIENDS
+        # -------------------------------------------------
+
+        cur.execute("""
+            SELECT id
+            FROM friend_requests
+            WHERE
+                (
+                    sender = %s
+                    AND receiver = %s
+                )
+                OR
+                (
+                    sender = %s
+                    AND receiver = %s
+                )
+            AND status = 'accepted'
+            LIMIT 1
+        """, (
+            current_user,
+            friend,
+            friend,
+            current_user
+        ))
+
+        friendship = cur.fetchone()
+
+        if not friendship:
+
+            cur.close()
+
+            return jsonify({
+                "status": "not_friends",
+                "message": "This user is not your friend."
+            }), 400
+
+
+        # -------------------------------------------------
+        # 2. REMOVE THE FRIENDSHIP
+        # -------------------------------------------------
+
+        cur.execute("""
+            DELETE FROM friend_requests
+            WHERE
+                (
+                    sender = %s
+                    AND receiver = %s
+                )
+                OR
+                (
+                    sender = %s
+                    AND receiver = %s
+                )
+            AND status = 'accepted'
+        """, (
+            current_user,
+            friend,
+            friend,
+            current_user
+        ))
+
+
+        # -------------------------------------------------
+        # 3. DELETE ENTIRE CHAT HISTORY
+        # -------------------------------------------------
+
+        cur.execute("""
+            DELETE FROM chat_messages
+            WHERE
+                (
+                    sender = %s
+                    AND receiver = %s
+                )
+                OR
+                (
+                    sender = %s
+                    AND receiver = %s
+                )
+        """, (
+            current_user,
+            friend,
+            friend,
+            current_user
+        ))
+
+
+        # -------------------------------------------------
+        # 4. DELETE READ STATUS FOR THIS CHAT
+        # -------------------------------------------------
+
+        cur.execute("""
+            DELETE FROM chat_read_status
+            WHERE
+                (
+                    username = %s
+                    AND friend = %s
+                )
+                OR
+                (
+                    username = %s
+                    AND friend = %s
+                )
+        """, (
+            current_user,
+            friend,
+            friend,
+            current_user
+        ))
+
+
+        # -------------------------------------------------
+        # 5. SAVE ALL CHANGES
+        # -------------------------------------------------
+
+        mysql.connection.commit()
+
+        cur.close()
+
+
+        # -------------------------------------------------
+        # 6. TELL FRONTEND REMOVAL WAS SUCCESSFUL
+        # -------------------------------------------------
+
+        return jsonify({
+            "status": "removed",
+            "friend": friend
+        })
+
+
+    except Exception as e:
+
+        # Roll back if anything goes wrong
+        mysql.connection.rollback()
+
+        cur.close()
+
+        print(
+            "Remove friend error:",
+            e
+        )
+
+        return jsonify({
+            "status": "error",
+            "message": "Unable to remove friend."
+        }), 500
+
+
+
+
+
+
+
+
+
+
 # ---------------- ACCEPT REQUEST ----------------
 @app.route('/accept_request', methods=['POST'])
 def accept_request():
 
-    sender = request.form['sender']
+    if 'user' not in session:
+        return jsonify({
+            "status": "unauthorized",
+            "message": "Please login first."
+        }), 401
+
+    sender = request.form.get(
+        'sender',
+        ''
+    ).strip()
+
     receiver = session['user']
+
+    if not sender:
+        return jsonify({
+            "status": "invalid",
+            "message": "Sender username is required."
+        }), 400
+
+    if sender == receiver:
+        return jsonify({
+            "status": "invalid",
+            "message": "Invalid friend request."
+        }), 400
 
     cur = mysql.connection.cursor()
 
@@ -455,8 +729,30 @@ def accept_request():
 @app.route('/reject_request', methods=['POST'])
 def reject_request():
 
-    sender = request.form['sender']
+    if 'user' not in session:
+        return jsonify({
+            "status": "unauthorized",
+            "message": "Please login first."
+        }), 401
+
+    sender = request.form.get(
+        'sender',
+        ''
+    ).strip()
+
     receiver = session['user']
+
+    if not sender:
+        return jsonify({
+            "status": "invalid",
+            "message": "Sender username is required."
+        }), 400
+
+    if sender == receiver:
+        return jsonify({
+            "status": "invalid",
+            "message": "Invalid friend request."
+        }), 400
 
     cur = mysql.connection.cursor()
 
@@ -709,10 +1005,25 @@ def mark_messages_read():
 @socketio.on('join_private')
 def join_private(data):
 
-    user1 = session['user']
-    user2 = data['receiver']
+    if 'user' not in session:
+        emit('receiver_offline', {
+            "msg": "You are not logged in. Please login again."
+        })
+        return
 
-    room = "_".join(sorted([user1,user2]))
+    user1 = session['user']
+
+    user2 = data.get('receiver', '').strip()
+
+    if not user2:
+        return
+
+    if user1 == user2:
+        return
+
+    room = "_".join(
+        sorted([user1, user2])
+    )
 
     join_room(room)
 
@@ -729,8 +1040,51 @@ def private_message(data):
         })
         return
 
-    receiver = data['receiver']
-    message = data['message']
+    receiver = data.get('receiver', '').strip()
+    message = data.get('message', '').strip()
+
+    if not receiver:
+
+        emit('receiver_offline', {
+            "msg": "Invalid receiver."
+        })
+
+        return
+
+    if not message:
+
+        return
+    
+    if len(message) > 1000:
+
+        emit('sender_warning', {
+            "msg": "Message is too long. Maximum 1000 characters allowed."
+        })
+
+        return
+
+    
+
+    # Make sure the receiver exists
+    cur = mysql.connection.cursor()
+    cur.execute(
+    "SELECT username FROM users WHERE username=%s",
+    (receiver,)
+    )
+    receiver_exists = cur.fetchone()
+
+    cur.close()
+    if not receiver_exists:
+        emit('receiver_offline', {
+            "msg": "This user does not exist."
+        })
+        return
+
+
+
+
+
+
 
     # Receiver does not need to be online.
     # The message is stored and delivered in real time if possible.

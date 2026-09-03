@@ -3,14 +3,94 @@ let currentSender = null;
 
 
 /* =========================================================
-   INITIAL LOAD
+   PAGE INITIALIZATION
 ========================================================= */
 
-loadFriends();
-loadUnreadCounts();
-loadUsers();
-loadRequests();
-loadSentRequests();
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* -----------------------------------------------------
+       USER LIST PAGE
+       These elements exist only on userlist.html
+    ----------------------------------------------------- */
+
+    if (document.getElementById("friends")) {
+
+        loadFriends();
+        loadUnreadCounts();
+        loadUsers();
+        loadRequests();
+        loadSentRequests();
+
+    }
+
+
+    /* -----------------------------------------------------
+       CHAT PAGE
+       These elements exist only on chat.html
+    ----------------------------------------------------- */
+
+    if (typeof receiver !== "undefined") {
+
+        const chatUser =
+            document.getElementById("chatUser");
+
+        if (chatUser) {
+
+            chatUser.innerText =
+                "Chat with " + receiver;
+
+        }
+
+
+        const messageInput =
+            document.getElementById("messageInput");
+
+        if (messageInput) {
+
+            messageInput.addEventListener(
+                "keydown",
+                function (event) {
+
+                    if (event.key === "Enter") {
+
+                        event.preventDefault();
+
+                        sendMessage();
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* -----------------------------------------------------
+       SOCKET CONNECTION
+    ----------------------------------------------------- */
+
+    try {
+
+        socket = io();
+
+        setupSocketEvents();
+
+        setupChatEvents();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Socket.IO connection failed:",
+            error
+        );
+
+    }
+
+});
 
 
 /* =========================================================
@@ -26,31 +106,37 @@ function showSection(sectionId, clickedButton) {
         document.querySelectorAll(".section-btn");
 
 
-    panels.forEach(panel => {
+    panels.forEach(function (panel) {
 
         panel.classList.remove("active");
 
     });
 
 
-    buttons.forEach(button => {
+    buttons.forEach(function (button) {
 
         button.classList.remove("active");
 
     });
 
 
-    document
-        .getElementById(sectionId)
-        .classList.add("active");
+    const selectedPanel =
+        document.getElementById(sectionId);
 
 
-    clickedButton.classList.add("active");
+    if (selectedPanel) {
+
+        selectedPanel.classList.add("active");
+
+    }
 
 
-    /*
-     * Refresh the selected section.
-     */
+    if (clickedButton) {
+
+        clickedButton.classList.add("active");
+
+    }
+
 
     if (sectionId === "friends-panel") {
 
@@ -59,20 +145,17 @@ function showSection(sectionId, clickedButton) {
 
     }
 
-
     else if (sectionId === "users-panel") {
 
         loadUsers();
 
     }
 
-
     else if (sectionId === "requests-panel") {
 
         loadRequests();
 
     }
-
 
     else if (sectionId === "sent-panel") {
 
@@ -81,29 +164,6 @@ function showSection(sectionId, clickedButton) {
     }
 
 }
-
-
-/* =========================================================
-   SOCKET CONNECTION
-========================================================= */
-
-try {
-
-    socket = io();
-
-}
-
-catch (error) {
-
-    console.error(
-        "Socket.IO connection failed:",
-        error
-    );
-
-}
-
-
-
 
 
 /* =========================================================
@@ -118,16 +178,22 @@ function loadFriends() {
 
         .then(data => {
 
-            let div =
-                document.getElementById(
-                    "friends"
-                );
+            const div =
+                document.getElementById("friends");
+
+
+            if (!div) {
+
+                return;
+
+            }
 
 
             div.innerHTML = "";
 
 
             if (
+                !data.friends ||
                 data.friends.length === 0
             ) {
 
@@ -139,54 +205,98 @@ function loadFriends() {
             }
 
 
-            data.friends.forEach(
-                friend => {
+            data.friends.forEach(function (friend) {
 
-                    let d =
-                        document.createElement(
-                            "div"
-                        );
+                const item =
+                    document.createElement("div");
 
 
-                    d.className =
-                        "user";
+                item.className = "user";
 
 
-                    d.innerHTML = `
+                const encodedFriend =
+                    encodeURIComponent(friend);
 
-                        <div class="friend-name-wrapper">
 
-                            <span>
-                                ${friend}
-                            </span>
+                item.innerHTML = `
 
-                            <span
-                                class="unread-badge"
-                                id="unread-${encodeURIComponent(friend)}"
-                                style="display:none;">
-                            </span>
+                    <div class="friend-name-wrapper">
 
-                        </div>
+                        <span>
+                            ${friend}
+                        </span>
 
+                        <span
+                            class="unread-badge"
+                            id="unread-${encodedFriend}"
+                            style="display:none;">
+                        </span>
+
+                    </div>
+
+
+                    <div class="friend-actions">
 
                         <button
+                            type="button"
                             class="chat"
-                            onclick="window.location='/chat/${friend}'">
+                            onclick="window.location='/chat/${encodedFriend}'">
 
                             Chat
 
                         </button>
 
-                    `;
+
+                        <div class="friend-menu-wrapper">
+
+                            <button
+                                type="button"
+                                class="friend-menu-button"
+                                onclick="toggleFriendMenu(event, '${encodedFriend}')"
+                                title="Friend options">
+
+                                &#8942;
+
+                            </button>
 
 
-                    div.appendChild(d);
+                            <div
+                                class="friend-menu"
+                                id="friend-menu-${encodedFriend}">
 
-                }
-            );
+                                <button
+                                    type="button"
+                                    class="remove-friend-button"
+                                    onclick="removeFriend('${encodedFriend}')">
+
+                                    Remove Friend
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                div.appendChild(item);
+
+            });
 
 
             loadUnreadCounts();
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Error loading friends:",
+                error
+            );
 
         });
 
@@ -194,7 +304,177 @@ function loadFriends() {
 
 
 /* =========================================================
-   UNREAD MESSAGE COUNTS
+   FRIEND MENU
+========================================================= */
+
+function toggleFriendMenu(event, friend) {
+
+    event.stopPropagation();
+
+
+    const menu =
+        document.getElementById(
+            "friend-menu-" + friend
+        );
+
+
+    if (!menu) {
+
+        return;
+
+    }
+
+
+    document
+        .querySelectorAll(".friend-menu")
+        .forEach(function (otherMenu) {
+
+            if (otherMenu !== menu) {
+
+                otherMenu.classList.remove("show");
+
+            }
+
+        });
+
+
+    menu.classList.toggle("show");
+
+}
+
+
+document.addEventListener("click", function () {
+
+    document
+        .querySelectorAll(".friend-menu")
+        .forEach(function (menu) {
+
+            menu.classList.remove("show");
+
+        });
+
+});
+
+
+/* =========================================================
+   REMOVE FRIEND
+========================================================= */
+
+function removeFriend(encodedFriend) {
+
+    const friend =
+        decodeURIComponent(encodedFriend);
+
+
+    const menu =
+        document.getElementById(
+            "friend-menu-" + encodedFriend
+        );
+
+
+    if (menu) {
+
+        menu.classList.remove("show");
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Remove " +
+            friend +
+            " from your friends?\n\n" +
+            "This will permanently delete your " +
+            "entire chat history with " +
+            friend +
+            "."
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    fetch(
+        "/remove_friend",
+        {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type":
+                    "application/x-www-form-urlencoded"
+            },
+
+            body:
+                "friend=" +
+                encodeURIComponent(friend)
+
+        }
+    )
+
+        .then(res => res.json())
+
+        .then(data => {
+
+            if (data.status === "removed") {
+
+                loadFriends();
+                loadUsers();
+                loadUnreadCounts();
+
+
+                alert(
+                    friend +
+                    " has been removed from your friends."
+                );
+
+            }
+
+            else if (data.status === "not_friends") {
+
+                alert(
+                    "This user is no longer your friend."
+                );
+
+                loadFriends();
+                loadUsers();
+
+            }
+
+            else {
+
+                alert(
+                    data.message ||
+                    "Unable to remove friend."
+                );
+
+            }
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Remove friend error:",
+                error
+            );
+
+
+            alert(
+                "An error occurred while removing the friend."
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   UNREAD COUNTS
 ========================================================= */
 
 function loadUnreadCounts() {
@@ -205,71 +485,65 @@ function loadUnreadCounts() {
 
         .then(data => {
 
-
             document
-                .querySelectorAll(
-                    ".unread-badge"
-                )
-                .forEach(
-                    badge => {
+                .querySelectorAll(".unread-badge")
+                .forEach(function (badge) {
 
-                        badge.style.display =
-                            "none";
+                    badge.style.display = "none";
+
+                    badge.textContent = "";
+
+                });
+
+
+            if (!data.unread) {
+
+                return;
+
+            }
+
+
+            Object.keys(data.unread)
+                .forEach(function (friend) {
+
+                    const badge =
+                        document.getElementById(
+                            "unread-" +
+                            encodeURIComponent(friend)
+                        );
+
+
+                    if (!badge) {
+
+                        return;
+
+                    }
+
+
+                    const count =
+                        data.unread[friend];
+
+
+                    if (count > 0) {
 
                         badge.textContent =
-                            "";
+                            "  (+ " +
+                            count +
+                            " new)";
+
+                        badge.style.display =
+                            "inline-flex";
 
                     }
-                );
 
-
-            Object
-                .keys(data.unread)
-                .forEach(
-                    friend => {
-
-
-                        const badge =
-                            document.getElementById(
-                                "unread-" +
-                                encodeURIComponent(
-                                    friend
-                                )
-                            );
-
-
-                        if (!badge) {
-
-                            return;
-
-                        }
-
-
-                        const count =
-                            data.unread[friend];
-
-
-                        if (count > 0) {
-
-                            badge.textContent =
-                                "  (+ " +
-                                count +
-                                " new)";
-
-                            badge.style.display =
-                                "inline-flex";
-
-                        }
-
-                    }
-                );
+                });
 
         })
 
-        .catch(error => {
+        .catch(function (error) {
 
             console.error(
-                "Error loading unread message counts:",
+                "Error loading unread counts:",
                 error
             );
 
@@ -290,16 +564,22 @@ function loadUsers() {
 
         .then(data => {
 
-            let div =
-                document.getElementById(
-                    "users"
-                );
+            const div =
+                document.getElementById("users");
+
+
+            if (!div) {
+
+                return;
+
+            }
 
 
             div.innerHTML = "";
 
 
             if (
+                !data.users ||
                 data.users.length === 0
             ) {
 
@@ -311,39 +591,42 @@ function loadUsers() {
             }
 
 
-            data.users.forEach(
-                user => {
+            data.users.forEach(function (user) {
 
-                    let d =
-                        document.createElement(
-                            "div"
-                        );
+                const item =
+                    document.createElement("div");
 
 
-                    d.className =
-                        "user";
+                item.className = "user";
 
 
-                    d.innerHTML = `
+                item.innerHTML = `
 
-                        <span>
-                            ${user}
-                        </span>
+                    <span>
+                        ${user}
+                    </span>
+
+                    <button
+                        onclick="sendRequest('${user}')">
+
+                        Send Request
+
+                    </button>
+
+                `;
 
 
-                        <button
-                            onclick="sendRequest('${user}')">
+                div.appendChild(item);
 
-                            Send Request
+            });
 
-                        </button>
+        })
 
-                    `;
+        .catch(function (error) {
 
-
-                    div.appendChild(d);
-
-                }
+            console.error(
+                "Error loading users:",
+                error
             );
 
         });
@@ -364,17 +647,13 @@ function sendRequest(user) {
             method: "POST",
 
             headers: {
-
                 "Content-Type":
                     "application/x-www-form-urlencoded"
-
             },
 
             body:
                 "receiver=" +
-                encodeURIComponent(
-                    user
-                )
+                encodeURIComponent(user)
 
         }
     )
@@ -383,30 +662,29 @@ function sendRequest(user) {
 
         .then(data => {
 
+            if (data.status === "already_sent") {
 
-            if (
-                data.status === "already_sent"
-            ) {
-
-                alert(
-                    "Request already sent"
-                );
+                alert("Request already sent");
 
             }
-
 
             else {
 
-                alert(
-                    "Request sent"
-                );
-
+                alert("Request sent");
 
                 loadUsers();
-
                 loadSentRequests();
 
             }
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Send request error:",
+                error
+            );
 
         });
 
@@ -425,139 +703,106 @@ function loadRequests() {
 
         .then(data => {
 
-            let div =
-                document.getElementById(
-                    "requests"
-                );
+            const div =
+                document.getElementById("requests");
 
 
-            div.innerHTML = "";
-
-
-            /*
-             * No pending requests.
-             */
-
-            if (
-                data.requests.length === 0
-            ) {
-
-                div.innerHTML = `
-
-                    <p class="empty-message">
-
-                        No pending friend requests.
-
-                    </p>
-
-                `;
-
-
+            if (!div) {
 
                 return;
 
             }
 
 
-            data.requests.forEach(
-                req => {
-
-                    let sender =
-                        req.sender;
+            div.innerHTML = "";
 
 
-                    let abusiveBadge =
-                        "";
+            if (
+                !data.requests ||
+                data.requests.length === 0
+            ) {
+
+                div.innerHTML = `
+                    <p class="empty-message">
+                        No pending friend requests.
+                    </p>
+                `;
+
+                return;
+
+            }
 
 
-                    /*
-                     * Abusive user warning.
-                     */
+            data.requests.forEach(function (req) {
 
-                    if (
-                        req.is_abuser
-                    ) {
-
-                        abusiveBadge = `
-
-                            <span
-                                class="abusive-badge">
-
-                                ⚠ Abusive User
-
-                            </span>
-
-                        `;
-
-                    }
+                const sender =
+                    req.sender;
 
 
-                    let d =
-                        document.createElement(
-                            "div"
-                        );
+                let abusiveBadge = "";
 
 
-                    d.className =
-                        "user";
+                if (req.is_abuser) {
 
-
-                    d.innerHTML = `
-
-                        <div
-                            class="request-user-info">
-
-                            <span
-                                class="username">
-
-                                ${sender}
-
-                            </span>
-
-                            ${abusiveBadge}
-
-                        </div>
-
-
-                        <div
-                            class="request-actions">
-
-
-                            <button
-                                onclick="acceptRequest(
-                                    '${sender}',
-                                    ${req.is_abuser}
-                                )">
-
-                                Accept
-
-                            </button>
-
-
-                            <button
-                                class="reject"
-                                onclick="rejectRequest(
-                                    '${sender}'
-                                )">
-
-                                Reject
-
-                            </button>
-
-
-                        </div>
-
+                    abusiveBadge = `
+                        <span class="abusive-badge">
+                            ⚠ Abusive User
+                        </span>
                     `;
 
-
-                    div.appendChild(d);
-
                 }
-            );
+
+
+                const item =
+                    document.createElement("div");
+
+
+                item.className = "user";
+
+
+                item.innerHTML = `
+
+                    <div class="request-user-info">
+
+                        <span class="username">
+                            ${sender}
+                        </span>
+
+                        ${abusiveBadge}
+
+                    </div>
+
+
+                    <div class="request-actions">
+
+                        <button
+                            onclick="acceptRequest('${sender}', ${req.is_abuser})">
+
+                            Accept
+
+                        </button>
+
+
+                        <button
+                            class="reject"
+                            onclick="rejectRequest('${sender}')">
+
+                            Reject
+
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                div.appendChild(item);
+
+            });
 
         })
 
-        .catch(error => {
+        .catch(function (error) {
 
             console.error(
                 "Error loading friend requests:",
@@ -581,16 +826,24 @@ function loadSentRequests() {
 
         .then(data => {
 
-            let div =
+            const div =
                 document.getElementById(
                     "sent_requests"
                 );
+
+
+            if (!div) {
+
+                return;
+
+            }
 
 
             div.innerHTML = "";
 
 
             if (
+                !data.requests ||
                 data.requests.length === 0
             ) {
 
@@ -602,70 +855,62 @@ function loadSentRequests() {
             }
 
 
-            data.requests.forEach(
-                req => {
+            data.requests.forEach(function (req) {
 
-                    let d =
-                        document.createElement(
-                            "div"
-                        );
+                const item =
+                    document.createElement("div");
 
 
-                    d.className =
-                        "user";
+                item.className = "user";
 
 
-                    let button =
-                        "";
+                let button = "";
 
 
-                    if (
-                        req.status === "pending"
-                    ) {
+                if (req.status === "pending") {
 
-                        button =
-                            "<button disabled>Pending</button>";
-
-                    }
-
-
-                    else if (
-                        req.status === "accepted"
-                    ) {
-
-                        button =
-                            "<button class='accept' disabled>Accepted</button>";
-
-                    }
-
-
-                    else if (
-                        req.status === "rejected"
-                    ) {
-
-                        button =
-                            "<button class='reject' disabled>Rejected</button>";
-
-                    }
-
-
-                    d.innerHTML = `
-
-                        <span>
-
-                            ${req.receiver}
-
-                        </span>
-
-
-                        ${button}
-
-                    `;
-
-
-                    div.appendChild(d);
+                    button =
+                        "<button disabled>Pending</button>";
 
                 }
+
+                else if (req.status === "accepted") {
+
+                    button =
+                        "<button class='accept' disabled>Accepted</button>";
+
+                }
+
+                else if (req.status === "rejected") {
+
+                    button =
+                        "<button class='reject' disabled>Rejected</button>";
+
+                }
+
+
+                item.innerHTML = `
+
+                    <span>
+                        ${req.receiver}
+                    </span>
+
+                    ${button}
+
+                `;
+
+
+                div.appendChild(item);
+
+            });
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Error loading sent requests:",
+                error
             );
 
         });
@@ -677,29 +922,24 @@ function loadSentRequests() {
    ACCEPT REQUEST
 ========================================================= */
 
-function acceptRequest(
-    sender,
-    isAbuser
-) {
-
-
-    /*
-     * If sender is an abusive user,
-     * show warning dialog first.
-     */
+function acceptRequest(sender, isAbuser) {
 
     if (isAbuser) {
 
-        currentSender =
-            sender;
+        currentSender = sender;
 
 
-        document
-            .getElementById(
+        const dialog =
+            document.getElementById(
                 "warningDialog"
-            )
-            .style.display =
-            "flex";
+            );
+
+
+        if (dialog) {
+
+            dialog.style.display = "flex";
+
+        }
 
 
         return;
@@ -714,36 +954,38 @@ function acceptRequest(
             method: "POST",
 
             headers: {
-
                 "Content-Type":
                     "application/x-www-form-urlencoded"
-
             },
 
             body:
                 "sender=" +
-                encodeURIComponent(
-                    sender
-                )
+                encodeURIComponent(sender)
 
         }
     )
 
         .then(res => res.json())
 
-        .then(() => {
-
+        .then(function () {
 
             loadFriends();
-
             loadRequests();
-
             loadUsers();
 
 
             window.location =
                 "/chat/" +
-                sender;
+                encodeURIComponent(sender);
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Accept request error:",
+                error
+            );
 
         });
 
@@ -754,9 +996,7 @@ function acceptRequest(
    REJECT REQUEST
 ========================================================= */
 
-function rejectRequest(
-    sender
-) {
+function rejectRequest(sender) {
 
     fetch(
         "/reject_request",
@@ -765,46 +1005,33 @@ function rejectRequest(
             method: "POST",
 
             headers: {
-
                 "Content-Type":
                     "application/x-www-form-urlencoded"
-
             },
 
             body:
                 "sender=" +
-                encodeURIComponent(
-                    sender
-                )
+                encodeURIComponent(sender)
 
         }
     )
 
         .then(res => res.json())
 
-        .then(() => {
-
-
-            /*
-             * Reload requests.
-             */
+        .then(function () {
 
             loadRequests();
-
-
-            /*
-             * Update users.
-             */
-
             loadUsers();
-
-
-            /*
-             * Update sent requests.
-             */
-
             loadSentRequests();
 
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Reject request error:",
+                error
+            );
 
         });
 
@@ -817,13 +1044,17 @@ function rejectRequest(
 
 function confirmAccept() {
 
-
-    document
-        .getElementById(
+    const dialog =
+        document.getElementById(
             "warningDialog"
-        )
-        .style.display =
-        "none";
+        );
+
+
+    if (dialog) {
+
+        dialog.style.display = "none";
+
+    }
 
 
     fetch(
@@ -833,34 +1064,37 @@ function confirmAccept() {
             method: "POST",
 
             headers: {
-
                 "Content-Type":
                     "application/x-www-form-urlencoded"
-
             },
 
             body:
                 "sender=" +
-                encodeURIComponent(
-                    currentSender
-                )
+                encodeURIComponent(currentSender)
 
         }
     )
 
         .then(res => res.json())
 
-        .then(() => {
-
+        .then(function () {
 
             loadFriends();
-
             loadRequests();
 
 
             window.location =
                 "/chat/" +
-                currentSender;
+                encodeURIComponent(currentSender);
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                "Confirm accept error:",
+                error
+            );
 
         });
 
@@ -873,70 +1107,58 @@ function confirmAccept() {
 
 function closeDialog() {
 
-    document
-        .getElementById(
+    const dialog =
+        document.getElementById(
             "warningDialog"
-        )
-        .style.display =
-        "none";
+        );
+
+
+    if (dialog) {
+
+        dialog.style.display = "none";
+
+    }
 
 }
 
 
 /* =========================================================
-   REAL-TIME EVENTS
+   SOCKET EVENTS — USER LIST
 ========================================================= */
 
-if (socket) {
+function setupSocketEvents() {
 
+    if (!socket) {
 
-    /*
-     * New unread chat message.
-     */
+        return;
+
+    }
+
 
     socket.on(
         "unread_update",
-
         function () {
 
             loadFriends();
-
             loadUnreadCounts();
 
         }
-
     );
 
 
-    /*
-     * NEW FRIEND REQUEST
-     *
-     * This is the important part for
-     * the notification badge.
-     */
-
     socket.on(
         "new_request",
-
         function () {
 
             loadRequests();
 
-
         }
-
     );
 
 
-    /*
-     * Someone accepted our request.
-     */
-
     socket.on(
         "accepted_redirect",
-
         function (data) {
-
 
             alert(
                 data.user +
@@ -945,73 +1167,155 @@ if (socket) {
 
 
             loadFriends();
-
             loadUsers();
-
             loadSentRequests();
-
 
 
             window.location =
                 "/chat/" +
-                data.user;
+                encodeURIComponent(data.user);
 
         }
-
     );
 
 }
 
 
-
-
-
-
-
 /* =========================================================
-   PRIVATE CHAT
+   SOCKET EVENTS — PRIVATE CHAT
 ========================================================= */
 
-if (typeof receiver !== "undefined") {
+function setupChatEvents() {
 
-    /*
-     * Join the private chat room.
-     */
-    function joinPrivateChat() {
+    if (
+        !socket ||
+        typeof receiver === "undefined"
+    ) {
 
-        if (socket && socket.connected) {
-
-            socket.emit("join_private", {
-                receiver: receiver
-            });
-
-        }
+        return;
 
     }
 
 
-    /*
-     * Socket connected.
-     */
-    if (socket) {
+    socket.on(
+        "connect",
+        function () {
 
-        socket.on("connect", function () {
+            socket.emit(
+                "join_private",
+                {
+                    receiver: receiver
+                }
+            );
+            loadChatHistory();
+        }
+    );
 
-            joinPrivateChat();
-
-        });
 
 
-        /*
-         * Receive messages.
-         */
-        socket.on("receive_message", function (data) {
+
+
+
+    function loadChatHistory() {
+
+        fetch(
+            "/get_messages?receiver=" +
+            encodeURIComponent(receiver)
+        )
+
+            .then(res => res.json())
+
+            .then(data => {
+
+                const chatBox =
+                    document.getElementById("chatBox");
+
+                if (!chatBox) {
+                    return;
+                }
+
+                chatBox.innerHTML = "";
+
+                data.messages.forEach(function (msg) {
+
+                    const div =
+                        document.createElement("div");
+
+                    if (msg.type === "blocked") {
+
+                        div.classList.add(
+                            "blocked-message"
+                        );
+
+                    }
+
+                    else {
+
+                        div.classList.add(
+                            "message"
+                        );
+
+                        if (msg.sender === username) {
+
+                            div.classList.add("sent");
+
+                        }
+
+                        else {
+
+                            div.classList.add("received");
+
+                        }
+
+                    }
+
+                    div.innerText =
+                        msg.message;
+
+                    chatBox.appendChild(div);
+
+                });
+
+                chatBox.scrollTop =
+                    chatBox.scrollHeight;
+
+            })
+
+            .catch(function (error) {
+
+                console.error(
+                    "Error loading chat history:",
+                    error
+                );
+
+            });
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    socket.on(
+        "receive_message",
+        function (data) {
 
             const chatBox =
                 document.getElementById("chatBox");
 
+
             if (!chatBox) {
+
                 return;
+
             }
 
 
@@ -1019,9 +1323,6 @@ if (typeof receiver !== "undefined") {
                 document.createElement("div");
 
 
-            /*
-             * Blocked message.
-             */
             if (data.type === "blocked") {
 
                 div.classList.add(
@@ -1030,10 +1331,6 @@ if (typeof receiver !== "undefined") {
 
             }
 
-
-            /*
-             * Normal message.
-             */
             else {
 
                 div.classList.add(
@@ -1043,17 +1340,13 @@ if (typeof receiver !== "undefined") {
 
                 if (data.user === username) {
 
-                    div.classList.add(
-                        "sent"
-                    );
+                    div.classList.add("sent");
 
                 }
 
                 else {
 
-                    div.classList.add(
-                        "received"
-                    );
+                    div.classList.add("received");
 
                 }
 
@@ -1070,161 +1363,208 @@ if (typeof receiver !== "undefined") {
             chatBox.scrollTop =
                 chatBox.scrollHeight;
 
-        });
+        }
+    );
+
+
+    socket.on(
+        "sender_warning",
+        function (data) {
+
+            showChatNotification(
+                data && data.msg
+                    ? data.msg
+                    : "⚠ Aggressive message detected.",
+                "warning"
+            );
+
+        }
+    );
+
+
+    socket.on(
+        "receiver_alert",
+        function (data) {
+
+            showChatNotification(
+                data && data.msg
+                    ? data.msg
+                    : "⚠ An aggressive message was detected.",
+                "alert"
+            );
+
+        }
+    );
+
+
+    socket.on(
+        "receiver_offline",
+        function (data) {
+
+            showChatNotification(
+                data && data.msg
+                    ? data.msg
+                    : "The receiver is currently offline.",
+                "alert"
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SEND MESSAGE
+========================================================= */
+
+function sendMessage() {
+
+    const input =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    if (!input) {
+
+        return;
 
     }
 
 
-    /*
-     * SEND MESSAGE
-     */
-    function sendMessage() {
-
-        const input =
-            document.getElementById(
-                "messageInput"
-            );
+    const message =
+        input.value.trim();
 
 
-        if (!input) {
+    if (message === "") {
 
-            console.error(
-                "messageInput not found."
-            );
-
-            return;
-
-        }
-
-
-        const message =
-            input.value.trim();
-
-
-        /*
-         * Don't send empty messages.
-         */
-        if (message === "") {
-
-            return;
-
-        }
-
-
-        /*
-         * Make sure Socket.IO is connected.
-         */
-        if (!socket || !socket.connected) {
-
-            console.error(
-                "Socket.IO is not connected."
-            );
-
-            alert(
-                "Chat connection is not ready. Please refresh the page."
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * Send message to Flask.
-         */
-        socket.emit(
-            "private_message",
-            {
-                receiver: receiver,
-                message: message
-            }
-        );
-
-
-        /*
-         * Clear input box.
-         */
-        input.value = "";
-
-
-        /*
-         * Put cursor back in the input.
-         */
-        input.focus();
+        return;
 
     }
 
 
-    /*
-     * Sender warning.
-     */
-    if (socket) {
+    if (
+        !socket ||
+        !socket.connected
+    ) {
 
-        socket.on(
-            "sender_warning",
-            function (data) {
-
-                if (
-                    typeof showNotification ===
-                    "function"
-                ) {
-
-                    showNotification(
-                        data.msg,
-                        "warning"
-                    );
-
-                }
-
-            }
+        console.error(
+            "Socket.IO is not connected."
         );
 
 
-        /*
-         * Receiver alert.
-         */
-        socket.on(
-            "receiver_alert",
-            function (data) {
-
-                if (
-                    typeof showNotification ===
-                    "function"
-                ) {
-
-                    showNotification(
-                        data.msg,
-                        "alert"
-                    );
-
-                }
-
-            }
+        alert(
+            "Chat connection is not ready. Please refresh the page."
         );
 
 
-        /*
-         * Connection lost.
-         */
-        socket.on(
-            "receiver_offline",
-            function (data) {
+        return;
 
-                if (
-                    typeof showNotification ===
-                    "function"
-                ) {
+    }
 
-                    showNotification(
-                        data.msg,
-                        "alert"
-                    );
 
-                }
+    socket.emit(
+        "private_message",
+        {
+            receiver: receiver,
+            message: message
+        }
+    );
 
-            }
+
+    input.value = "";
+
+    input.focus();
+
+}
+
+
+/* =========================================================
+   CHAT NOTIFICATION
+========================================================= */
+
+function showChatNotification(
+    message,
+    type
+) {
+
+    let box =
+        document.getElementById(
+            "notificationBox"
+        );
+
+
+    if (!box) {
+
+        box =
+            document.createElement(
+                "div"
+            );
+
+
+        box.id =
+            "notificationBox";
+
+
+        document.body.appendChild(
+            box
         );
 
     }
+
+
+    const notification =
+        document.createElement(
+            "div"
+        );
+
+
+    notification.classList.add(
+        "notification"
+    );
+
+
+    if (type === "warning") {
+
+        notification.classList.add(
+            "warning"
+        );
+
+    }
+
+    else if (type === "alert") {
+
+        notification.classList.add(
+            "alert"
+        );
+
+    }
+
+
+    notification.textContent =
+        message;
+
+
+    box.appendChild(
+        notification
+    );
+
+
+    setTimeout(
+        function () {
+
+            if (
+                notification &&
+                notification.parentNode
+            ) {
+
+                notification.remove();
+
+            }
+
+        },
+        5000
+    );
 
 }
