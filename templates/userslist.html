@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Available Users | Cyber Aggression Detection</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+
+<body class="users-page">
+
+
+    <!-- ======================================================
+         MAIN CONTAINER
+    ======================================================= -->
+
+    <div class="container users-container">
+
+
+        <!-- ==================================================
+             HEADER
+        =================================================== -->
+
+        <div class="users-header">
+
+            <h1>Connect with Users</h1>
+
+        </div>
+
+
+        <!-- ==================================================
+             SECTION NAVIGATION
+        =================================================== -->
+
+        <div class="section-nav">
+
+            <button class="section-btn active" onclick="showSection('friends-panel', this)">
+
+                Friends
+
+            </button>
+
+
+            <button class="section-btn" onclick="showSection('users-panel', this)">
+
+                Users
+
+            </button>
+
+
+            <button class="section-btn" onclick="showSection('requests-panel', this)">
+
+                Friend Requests
+
+            </button>
+
+
+            <button class="section-btn" onclick="showSection('sent-panel', this)">
+
+                Sent Requests
+
+            </button>
+
+        </div>
+
+
+        <!-- ==================================================
+             FRIENDS
+        =================================================== -->
+
+        <div id="friends-panel" class="section section-panel active">
+
+            <h3>Friends</h3>
+
+            <div id="friends"></div>
+
+        </div>
+
+
+        <!-- ==================================================
+             AVAILABLE USERS
+        =================================================== -->
+
+        <div id="users-panel" class="section section-panel">
+
+            <h3>Users</h3>
+
+            <div id="users"></div>
+
+        </div>
+
+
+        <!-- ==================================================
+             FRIEND REQUESTS
+        =================================================== -->
+
+        <div id="requests-panel" class="section section-panel">
+
+            <h3>Friend Requests</h3>
+
+            <div id="requests"></div>
+
+        </div>
+
+
+        <!-- ==================================================
+             SENT REQUESTS
+        =================================================== -->
+
+        <div id="sent-panel" class="section section-panel">
+
+            <h3>Sent Requests</h3>
+
+            <div id="sent_requests"></div>
+
+        </div>
+
+
+        <!-- ==================================================
+             LOGOUT
+        =================================================== -->
+
+        <div class="logout-container">
+
+            <a href="{{ url_for('logout') }}" class="logout-btn">
+
+                Logout
+
+            </a>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ======================================================
+         WARNING DIALOG
+    ======================================================= -->
+
+    <div id="warningDialog">
+
+        <div class="dialog-content">
+
+            <h3>⚠ Safety Warning</h3>
+
+            <p>
+                This user has previous abuse violations.
+                <br>
+                Are you sure you want to accept this request?
+            </p>
+
+
+            <button onclick="confirmAccept()">
+
+                Accept Anyway
+
+            </button>
+
+
+            <button class="reject" onclick="closeDialog()">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         SOCKET.IO
+    ======================================================= -->
+
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+
+</body>
+
+</html>
